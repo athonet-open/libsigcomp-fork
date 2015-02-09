@@ -41,7 +41,7 @@ Mutex::Mutex()
 #elif defined(USE_PTHREAD_TRHREADS)
 	this->lphandle = new pthread_mutex_t;
 	pthread_mutexattr_t *lpattributes = NULL;
-	pthread_mutex_init( (pthread_mutex_t*)this->lphandle, lpattributes );
+	pthread_mutex_init( this->lphandle, lpattributes );
 #else
 	this->lphandle = NULL;
 #endif
@@ -52,7 +52,7 @@ Mutex::~Mutex()
 #if defined(USE_WIN32_THREADS)
 	// do nothing
 #elif defined(USE_PTHREAD_TRHREADS)
-	pthread_mutex_destroy((pthread_mutex_t*)this->lphandle);
+	pthread_mutex_destroy(this->lphandle);
 #endif
 
 	SAFE_DELETE_PTR(this->lphandle);
@@ -67,7 +67,7 @@ void Mutex::lock()
 	DWORD ret = WaitForSingleObject(*((HANDLE*)this->lphandle), INFINITE);
 	assert(ret != WAIT_FAILED);
 #elif defined(USE_PTHREAD_TRHREADS)
-	int ret = pthread_mutex_lock((pthread_mutex_t*)this->lphandle);
+	int ret = pthread_mutex_lock(this->lphandle);
 	assert(ret == 0);
 #endif
 }
@@ -81,7 +81,7 @@ void Mutex::unlock()
 	DWORD ret = ReleaseMutex(*((HANDLE*)this->lphandle));
 	assert(ret);
 #elif defined(USE_PTHREAD_TRHREADS)
-	int ret = pthread_mutex_unlock((pthread_mutex_t*)this->lphandle);
+	int ret = pthread_mutex_unlock(this->lphandle);
 	assert(ret == 0);
 #endif
 }

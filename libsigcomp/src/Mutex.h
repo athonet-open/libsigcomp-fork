@@ -22,6 +22,7 @@
 #if !defined(LIBSIGCOMP_MUTEX_H)
 #define LIBSIGCOMP_MUTEX_H
 
+#include <pthread.h>
 #include "libsigcomp_config.h"
 
 __NS_DECLARATION_BEGIN__
@@ -36,7 +37,7 @@ public:
 	void unlock();
 
 private:
-	void* lphandle;
+	pthread_mutex_t* lphandle;
 };
 
 __NS_DECLARATION_END__
