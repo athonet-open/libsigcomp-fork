@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <c_wrapper.h>
+#include "c_wrapper.h"
 
 #define COMPARTMENT_ID1		1983	// My first compartment id
 #define COMPARTMENT_ID2		1984	// My second compartment id
@@ -260,7 +260,7 @@ int main(int argc, char **a_argv)
 			if(outLen) // OK
 			{
 				// buff2 contains the result and outLen is result length
-				printf(buff2);
+				printf("%s\n",buff2);
 				PRINTLN;
 
 				// provide the compartment id --> save temp states
@@ -297,7 +297,7 @@ int main(int argc, char **a_argv)
 			outLen = SigCompManager_decompress(manager1, buff2, outLen, result1);
 			if(outLen)
 			{
-				printf(buff1);
+				printf("%s\n",buff1);
 				PRINTLN;
 				SigCompManager_provideCompartmentId(manager1, result1);
 			}

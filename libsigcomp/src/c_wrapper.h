@@ -51,8 +51,16 @@ EXTERN_C void SigCompManager_setDecompression_Memory_Size(SigCompManager*, uint3
 EXTERN_C void SigCompManager_setState_Memory_Size(SigCompManager*, uint32_t);
 EXTERN_C void SigCompManager_setCycles_Per_Bit(SigCompManager* manager, uint8_t cpb);
 EXTERN_C size_t SigCompManager_compress(SigCompManager*, uint64_t compartmentId, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, BOOLEAN stream);
+#ifdef __cplusplus
 EXTERN_C size_t SigCompManager_decompress(SigCompManager*, const void* input_ptr, size_t input_size, struct DecompressionResult* );
+#else
+EXTERN_C size_t SigCompManager_decompress(SigCompManager*, const void* input_ptr, size_t input_size, DecompressionResult* );
+#endif
+#ifdef __cplusplus
 EXTERN_C void SigCompManager_provideCompartmentId(SigCompManager* , struct DecompressionResult* );
+#else
+EXTERN_C void SigCompManager_provideCompartmentId(SigCompManager* , DecompressionResult* );
+#endif
 EXTERN_C void SigCompManager_closeCompartment(SigCompManager*, uint64_t compartmentId);
 EXTERN_C void SigCompManager_delete(SigCompManager**);
 

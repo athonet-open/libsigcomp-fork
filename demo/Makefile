@@ -13,7 +13,6 @@ STATICLIBOUT=$(LIBPATH)lib$(LIBNAME).a
 LIBDYNAMIC=$(LIBPATH)lib$(LIBNAME).so
 
 CPPFLAGS+=-Wno-attributes
-CPPFLAGS+=-Wno-conversion-null
 CPPFLAGS+=-fkeep-inline-functions
 
 LIBCFLAGS+=-Wall -W
