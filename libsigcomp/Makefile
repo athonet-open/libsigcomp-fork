@@ -35,6 +35,7 @@ LIBOBJ+=$(SRCPATH)SigCompUDVM.StateManagement.o
 LIBOBJ+=$(SRCPATH)SipDictionaryState.o
 LIBOBJ+=$(SRCPATH)trees.o
 LIBOBJ+=$(SRCPATH)zutil.o
+LIBOBJ+=$(SRCPATH)alloc.o
 
 GCCCOMPILE=gcc
 GPPCOMPILE=g++
@@ -47,6 +48,7 @@ CFLAGS+=-DHAVE_CONFIG_H
 CPPFLAGS+=-Wno-conversion-null
 CPPFLAGS+=-fkeep-inline-functions
 LIBLDFLAGS+=-shared
+LIBLDFLAGS+=-Wl,-Map=lib.map
 INCLUDES+=-I/src/
 INCLUDES+=-I./
 
