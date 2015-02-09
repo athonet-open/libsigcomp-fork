@@ -32,7 +32,7 @@
 #endif
 
 #ifdef __cplusplus
-#	define EXTERN_C	extern "C" LIBSIGCOMP_API
+#	define EXTERN_C	extern "C"
 #	define BOOLEAN	bool
 #else
 #	define EXTERN_C extern

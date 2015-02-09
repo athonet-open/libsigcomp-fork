@@ -20,7 +20,9 @@
 * Authors:	Mamadou Diop <mamadou.diop@inexbee.com>
 *			Laurent Etiemble <laurent.etiemble@inexbee.com>
 */
-
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include <c_wrapper.h>
 
 #define COMPARTMENT_ID1		1983	// My first compartment id
@@ -199,7 +201,7 @@ const char* messages[] =
 		"\r\n"
 	//}
 };
-
+// extern "C" {
 int main(int argc, char **a_argv)
 {
 	int i = 0;
@@ -328,3 +330,4 @@ int main(int argc, char **a_argv)
 	SigCompManager_delete(&manager2);
 
 }
+// }

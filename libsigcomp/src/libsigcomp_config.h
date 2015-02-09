@@ -23,7 +23,7 @@
 #define LIBSIGCOMP_CONFIG_H
 
 #if defined(__GNUC__)
-#	include "config.h" // You are probably using autoconf/configure
+#	define USE_PTHREAD_TRHREADS // Use pthread
 #elif defined(WIN32) || defined(_WIN32_WCE)
 #	define USE_WIN32_THREADS // Use Win32 threading
 #else

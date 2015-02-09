@@ -1,0 +1,165 @@
+Index: demo/Makefile
+===================================================================
+--- demo/Makefile	(revision 0)
++++ demo/Makefile	(working copy)
+@@ -0,0 +1,37 @@
++APPNAME=test
++GPP=g++
++GCC=gcc
++LD=g++
++SOURCES=*.c
++LIBNAME=sigcomp
++LIBPATH=../libsigcomp/
++
++INCLUDES+=-I$(LIBPATH)src/
++INCLUDES+=-I$(LIBPATH)
++
++STATICLIBOUT=$(LIBPATH)lib$(LIBNAME).a
++LIBDYNAMIC=$(LIBPATH)lib$(LIBNAME).so
++
++CPPFLAGS+=-Wno-attributes
++CPPFLAGS+=-Wno-conversion-null
++CPPFLAGS+=-fkeep-inline-functions
++
++LIBCFLAGS+=-Wall -W
++LIBCFLAGS+=-fPIC
++LIBLDFLAGS+=-shared
++
++all: $(LIBDYNAMIC)
++	#$(GPP) $(SOURCES) -o $(APPNAME) $(STATICLIBOUT) $(INCLUDES)
++	$(GCC) $(SOURCES) -o $(APPNAME) $(CPPFLAGS) -L$(LIBPATH) -lsigcomp $(INCLUDES)
++
++$(LIBDYNAMIC):
++	+$(MAKE) -C $(LIBPATH) -f Makefile
++
++clean:
++	rm -rf $(APPNAME)
++	+$(MAKE) -C $(LIBPATH) -f Makefile clean	
++
++run:
++	LD_LIBRARY_PATH=$(LIBPATH) ./$(APPNAME)
++	
++.PHONY: clean
+\ No newline at end of file
+Index: demo/demo.c
+===================================================================
+--- demo/demo.c	(revision 86)
++++ demo/demo.c	(working copy)
+@@ -20,7 +20,9 @@
+ * Authors:	Mamadou Diop <mamadou.diop@inexbee.com>
+ *			Laurent Etiemble <laurent.etiemble@inexbee.com>
+ */
+-
++#include <stdlib.h>
++#include <stdio.h>
++#include <string.h>
+ #include <c_wrapper.h>
+ 
+ #define COMPARTMENT_ID1		1983	// My first compartment id
+@@ -199,7 +201,7 @@
+ 		"\r\n"
+ 	//}
+ };
+-
++// extern "C" {
+ int main(int argc, char **a_argv)
+ {
+ 	int i = 0;
+@@ -327,4 +329,5 @@
+ 	SigCompManager_delete(&manager1);
+ 	SigCompManager_delete(&manager2);
+ 
+-}
+\ No newline at end of file
++}
++// }
+\ No newline at end of file
+Index: libsigcomp/Makefile
+===================================================================
+--- libsigcomp/Makefile	(revision 0)
++++ libsigcomp/Makefile	(working copy)
+@@ -0,0 +1,70 @@
++LIBNAME=sigcomp
++SRCPATH=./src/
++
++LIBOBJ+=$(SRCPATH)adler32.o
++LIBOBJ+=$(SRCPATH)binary_utils.o
++LIBOBJ+=$(SRCPATH)compress.o
++LIBOBJ+=$(SRCPATH)c_wrapper.o
++LIBOBJ+=$(SRCPATH)deflate.o
++LIBOBJ+=$(SRCPATH)DeflateCompressor.o
++LIBOBJ+=$(SRCPATH)DeflateData.o
++LIBOBJ+=$(SRCPATH)DeflateData.Ghost.o
++LIBOBJ+=$(SRCPATH)DeflateData.zlib.o
++LIBOBJ+=$(SRCPATH)DummyCompressor.o
++LIBOBJ+=$(SRCPATH)Mutex.o
++LIBOBJ+=$(SRCPATH)PresenceDictionaryState.o
++LIBOBJ+=$(SRCPATH)rfc1662_ppfcs16.o
++LIBOBJ+=$(SRCPATH)rfc3174_us-sha1.o
++LIBOBJ+=$(SRCPATH)SafeObject.o
++LIBOBJ+=$(SRCPATH)SigCompBuffer.o
++LIBOBJ+=$(SRCPATH)SigCompCompartment.o
++LIBOBJ+=$(SRCPATH)SigCompCompressor.o
++LIBOBJ+=$(SRCPATH)SigCompCompressorData.o
++LIBOBJ+=$(SRCPATH)SigCompCompressorDisp.o
++LIBOBJ+=$(SRCPATH)SigCompDecompressorDisp.o
++LIBOBJ+=$(SRCPATH)SigCompManager.o
++LIBOBJ+=$(SRCPATH)SigCompMessage.o
++LIBOBJ+=$(SRCPATH)SigCompState.o
++LIBOBJ+=$(SRCPATH)SigCompStateHandler.o
++LIBOBJ+=$(SRCPATH)SigCompUDVM.ByteCopy.o
++LIBOBJ+=$(SRCPATH)SigCompUDVM.o
++LIBOBJ+=$(SRCPATH)SigCompUDVM.Instructions.o
++LIBOBJ+=$(SRCPATH)SigCompUDVM.Nack.o
++LIBOBJ+=$(SRCPATH)SigCompUDVM.Operands.o
++LIBOBJ+=$(SRCPATH)SigCompUDVM.StateManagement.o
++LIBOBJ+=$(SRCPATH)SipDictionaryState.o
++LIBOBJ+=$(SRCPATH)trees.o
++LIBOBJ+=$(SRCPATH)zutil.o
++
++GCCCOMPILE=gcc
++GPPCOMPILE=g++
++LINK=g++
++CFLAGS+=-fPIC
++CFLAGS+=-g
++CFLAGS+=-O2
++CFLAGS+=-Wno-attributes
++CFLAGS+=-DHAVE_CONFIG_H
++CPPFLAGS+=-Wno-conversion-null
++CPPFLAGS+=-fkeep-inline-functions
++LIBLDFLAGS+=-shared
++INCLUDES+=-I/src/
++INCLUDES+=-I./
++
++#g++ -DHAVE_CONFIG_H -I.     -fPIC -g -O2 -fkeep-inline-functions -MT c_wrapper.o -MD -MP -MF .deps/c_wrapper.Tpo -c -o c_wrapper.o
++#g++ -fPIC -g -O2 -Wattributes -fkeep-inline-functions -I/src/ -I./ src/c_wrapper.cxx -o src/c_wrapper.o
++
++
++lib$(LIBNAME).so: $(LIBOBJ)
++	$(LINK) $(LIBLDFLAGS) -o lib$(LIBNAME).so $(LIBOBJ)
++
++%.o: %.c
++	$(GCCCOMPILE) $(CFLAGS) $(INCLUDES) -c $< -o $@
++
++%.o: %.cpp
++	$(GPPCOMPILE) $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -c $< -o $@
++
++%.o: %.cxx
++	$(GPPCOMPILE) $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -c $< -o $@
++
++clean:
++	rm -rf lib$(LIBNAME).so $(LIBOBJ)
+\ No newline at end of file
+Index: libsigcomp/src/c_wrapper.h
+===================================================================
+--- libsigcomp/src/c_wrapper.h	(revision 86)
++++ libsigcomp/src/c_wrapper.h	(working copy)
+@@ -32,7 +32,7 @@
+ #endif
+ 
+ #ifdef __cplusplus
+-#	define EXTERN_C	extern "C" LIBSIGCOMP_API
++#	define EXTERN_C	extern "C"
+ #	define BOOLEAN	bool
+ #else
+ #	define EXTERN_C extern
