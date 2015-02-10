@@ -12,16 +12,17 @@ INCLUDES+=-I$(LIBPATH)
 STATICLIBOUT=$(LIBPATH)lib$(LIBNAME).a
 LIBDYNAMIC=$(LIBPATH)lib$(LIBNAME).so
 
-CPPFLAGS+=-Wno-attributes
-CPPFLAGS+=-fkeep-inline-functions
+CFLAGS+=-Wno-attributes
+CFLAGS+=-fkeep-inline-functions
+CFLAGS+=-g
 
-LIBCFLAGS+=-Wall -W
-LIBCFLAGS+=-fPIC
-LIBLDFLAGS+=-shared
+#LIBCFLAGS+=-Wall -W
+#LIBCFLAGS+=-fPIC
+#LIBLDFLAGS+=-shared
 
 all: $(LIBDYNAMIC)
 	#$(GPP) $(SOURCES) -o $(APPNAME) $(STATICLIBOUT) $(INCLUDES)
-	$(GCC) $(SOURCES) -o $(APPNAME) $(CPPFLAGS) -L$(LIBPATH) -lsigcomp $(INCLUDES)
+	$(GCC) $(SOURCES) -o $(APPNAME) $(CFLAGS) -L$(LIBPATH) -lsigcomp -ldl $(INCLUDES)
 
 $(LIBDYNAMIC):
 	+$(MAKE) -C $(LIBPATH) -f Makefile

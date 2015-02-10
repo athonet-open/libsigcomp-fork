@@ -68,5 +68,11 @@ lib$(LIBNAME).so: $(LIBOBJ)
 %.o: %.cxx
 	$(GPPCOMPILE) $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -c $< -o $@
 
+%.c: %.h
+
+%.cpp: %.h
+
+%.cxx: %.h
+
 clean:
 	rm -rf lib$(LIBNAME).so $(LIBOBJ)
