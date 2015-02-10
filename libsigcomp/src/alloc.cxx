@@ -98,11 +98,12 @@ free(void* __ptr)
 	orig_free(__ptr);
 }
 
-// #define USE_KAMAILIO_SHM_MEM_MGR
+#define USE_KAMAILIO_SHM_MEM_MGR
 #define SHM_MEM
-#undef SHM_SAFE_MALLOC
-#undef DBG_QM_MALLOC
-#define USE_PTHREAD_MUTEX
+#define F_MALLOC
+#define __CPU_x86_64
+#define FAST_LOCK
+#define USE_FUTEX
 #ifdef USE_KAMAILIO_SHM_MEM_MGR
 #include "../../../mem/shm_mem.h"
 #endif
