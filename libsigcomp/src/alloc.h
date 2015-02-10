@@ -1,12 +1,21 @@
-/*****************************************************************************/
-/* Copyright (C) 2008-2010 Athonet, SRL. www.athonet.com All rights reserved.*/
-/*****************************************************************************/
+/**
+    Copyright (C) 2009 Riccardo Manfrin at gmail dot com
+    
+	This file is part of libSigComp fork project.
 
-/*
- * THIS FILE IS PROPRIETARY MATERIAL OF ATHONET SRL, TRIESTE, ITALY.
- * AND MAY BE USED ONLY BY DIRECT LICENSEES OF ATHONET, SRL.
- * THIS FILE MAY NOT BE DISTRIBUTED.
- */
+    libSigComp fork is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+	
+    libSigComp fork is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+	
+    You should have received a copy of the GNU Lesser General Public License
+    along with libSigComp fork.  
+*/
 
 /**
  * @file alloc.h
