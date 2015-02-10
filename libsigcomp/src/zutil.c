@@ -7,6 +7,7 @@
 /* @(#) $Id$ */
 
 #include "zutil.h"
+#include "alloc.h"
 
 #ifndef NO_DUMMY_DECL
 struct internal_state      {int dummy;}; /* for buggy compilers */
@@ -304,15 +305,15 @@ voidpf zcalloc (opaque, items, size)
     unsigned size;
 {
     if (opaque) items += size - size; /* make compiler happy */
-    return sizeof(uInt) > 2 ? (voidpf)malloc(items * size) :
-                              (voidpf)calloc(items, size);
+    return sizeof(uInt) > 2 ? (voidpf)alloc_malloc(items * size) :
+                              (voidpf)alloc_calloc(items, size); 
 }
 
 void  zcfree (opaque, ptr)
     voidpf opaque;
     voidpf ptr;
 {
-    free(ptr);
+    alloc_free(ptr);
     if (opaque) return; /* make compiler happy */
 }
 

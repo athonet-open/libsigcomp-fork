@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2009 Riccardo Manfrin at gmail dot com
+    Copyright (C) 2015 Riccardo Manfrin at gmail dot com
     
 	This file is part of libSigComp fork project.
 
@@ -38,6 +38,18 @@ extern "C" {
  * Retrieves actual original references to malloc/free
  */
 void alloc_init();
+
+/**
+ * @brief verifies new / delete overridden behavior
+ */
+void alloc_test();
+
+
+void *alloc_malloc(size_t size);
+void alloc_free(void * ptr);
+void *alloc_calloc(size_t nmemb, size_t size);
+void *alloc_realloc(void *ptr, size_t size);
+
 #ifdef __cplusplus
 };
 #endif

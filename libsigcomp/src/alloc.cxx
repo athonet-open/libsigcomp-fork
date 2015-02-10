@@ -1,6 +1,6 @@
 /**
 	
-	Copyright (C) 2009 Riccardo Manfrin at gmail dot com
+	Copyright (C) 2015 Riccardo Manfrin at gmail dot com
 	
 	This file is part of libSigComp fork project.
 
@@ -29,26 +29,63 @@
 #include <stdio.h>
 #include <dlfcn.h>
 #include "alloc.h"
+
+class alloc_test_t {
+	char *alloc_data;
+public:
+	alloc_test_t()
+	{
+		printf("Invoked constructor\n");
+		alloc_data = (char *) alloc_malloc(1);
+	}
+	~alloc_test_t()
+	{
+		printf("Invoked destructor\n");
+		alloc_free(alloc_data);
+	}
+};
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-static void* (*orig_malloc)(size_t) = NULL;
-static void (*orig_free)(void *) = NULL;
+static void* 	(*orig_malloc)(size_t) = NULL;
+static void* 	(*orig_calloc)(size_t nmemb, size_t size);
+static void* 	(*orig_realloc)(void *ptr, size_t size);
+static void 	(*orig_free)(void *) = NULL;
 
 void
 alloc_init() {
-	orig_malloc = (void* (*)(size_t)) dlsym(RTLD_NEXT, "malloc");
-	orig_free = (void (*)(void *)) dlsym(RTLD_NEXT, "free");
+	orig_malloc = 	(void* (*)(size_t)) 
+			dlsym(RTLD_NEXT, "malloc");
+	orig_calloc = 	(void* (*)(size_t nmemb, size_t size)) 
+			dlsym(RTLD_NEXT, "calloc");
+	orig_realloc = 	(void* (*)(void *ptr, size_t size)) 
+			dlsym(RTLD_NEXT, "realloc");
+	orig_free = 	(void (*)(void *))
+			dlsym(RTLD_NEXT, "free");
 }
 
 /**
  * @brief malloc replacement overrides malloc symbol
  */
 void*
-malloc(unsigned long int __size)
+malloc(size_t __size)
 {
 	return orig_malloc(__size);
+}
+
+void *
+calloc(size_t nmemb, size_t size)
+{
+	return orig_calloc(nmemb, size);
+}
+
+void *
+realloc(void *ptr, size_t size)
+{
+	return orig_realloc(ptr, size);
 }
 
 /**
@@ -60,6 +97,37 @@ free(void* __ptr)
 	orig_free(__ptr);
 }
 
+void* 
+alloc_malloc(size_t size)
+{
+	return orig_malloc(size);
+}
+
+void* 
+alloc_calloc(size_t nmemb, size_t size)
+{
+	return orig_calloc(nmemb, size);
+}
+
+void* 
+alloc_realloc(void* ptr, size_t size)
+{
+	return orig_realloc(ptr, size);
+}
+
+void
+alloc_free(void* ptr)
+{
+	orig_free(ptr);
+}
+
+void 
+alloc_test()
+{
+	alloc_test_t *t = new alloc_test_t();
+	delete t;
+}
+
 #ifdef __cplusplus
 };
 #endif
@@ -69,27 +137,24 @@ free(void* __ptr)
 #include <bits/exception_defines.h>
 #include "new"
 
-using std::new_handler;
+
 using std::bad_alloc;
-#if _GLIBCXX_HOSTED
-using std::malloc;
-#else
-// A freestanding C runtime may not provide "malloc" -- but there is no
-// other reasonable way to implement "operator new".
-extern "C" void *malloc (std::size_t);
-#endif
 
-// new_handler get_new_handler();
-
-_GLIBCXX_WEAK_DEFINITION void *
+void *
 operator new (std::size_t sz) _GLIBCXX_THROW (std::bad_alloc)
 {
-  void *p;
+	void *p;
 
-  /* malloc (0) is unpredictable; avoid it.  */
-  if (sz == 0)
-    sz = 1;
-  p = (void *) malloc (sz);
+	/* malloc (0) is unpredictable; avoid it.  */
+	if (sz == 0)
+		sz = 1;
+	p = (void *) alloc_malloc(sz);
 
-  return p;
+	return p;
+}
+
+void
+operator delete(void* ptr) _GLIBCXX_USE_NOEXCEPT
+{
+	alloc_free(ptr);
 }

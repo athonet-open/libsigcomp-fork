@@ -21,6 +21,7 @@
 
 #include "global_config.h"
 #include "SigCompCompressorDisp.h"
+#include "alloc.h"
 
 #define NACK_SUPPORTED (this->stateHandler->getSigCompParameters()->getSigCompVersion() >= 0x02)
 
@@ -80,7 +81,7 @@ bool SigCompCompressorDisp::compress(uint64_t compartmentId, LPCVOID input_ptr, 
 	{
 		size_t escapedBufferSize = (output_size + 2); // 2 = strlen(0xffff)
 		for(register size_t i=0;i<output_size;i++) escapedBufferSize += ((uint8_t*)output_ptr)[i]==0xff?1:0;
-		uint8_t* escapedBuffer = (uint8_t*)malloc(escapedBufferSize);
+		uint8_t* escapedBuffer = (uint8_t*)alloc_malloc(escapedBufferSize);
 		assert(escapedBuffer);
 
 		for(register size_t i=0, j=0; i<output_size; i++, j++)
@@ -97,7 +98,7 @@ bool SigCompCompressorDisp::compress(uint64_t compartmentId, LPCVOID input_ptr, 
 		::memmove(output_ptr, escapedBuffer, escapedBufferSize);
 		
 		output_size = escapedBufferSize; // Update size
-		free(escapedBuffer); // free
+		alloc_free(escapedBuffer); // free
 	}
 
 	//

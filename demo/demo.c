@@ -209,6 +209,7 @@ int main(int argc, char **a_argv)
 	size_t outLen = 0;
 
 	alloc_init();
+	alloc_test();
 	SigCompManager *manager1 = 0, *manager2 = 0;
 	DecompressionResult *result1 = 0, *result2 = 0;
 

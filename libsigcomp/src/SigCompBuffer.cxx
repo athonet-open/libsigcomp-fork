@@ -22,6 +22,7 @@
 #include "global_config.h"
 #include "SigCompBuffer.h"
 #include "binary_utils.h"
+#include "alloc.h"
 
 #include <iostream>
 #include <math.h>
@@ -201,10 +202,10 @@ void SigCompBuffer::allocBuff(size_t _size)
 	assert(this->owner);
 	assert(_size);
 	//assert(!this->size && !this->lpbuffer);
-	if(this->lpbuffer) ::free(this->lpbuffer);
+	if(this->lpbuffer) alloc_free(this->lpbuffer);
 
 	this->index_bits = this->index_bytes = 0;
-	this->lpbuffer = (uint8_t*) ::malloc( _size );
+	this->lpbuffer = (uint8_t*) alloc_malloc( _size );
 	::memset( this->lpbuffer, NULL, _size);
 	this->size = _size;
 }
@@ -245,10 +246,10 @@ bool SigCompBuffer::appendBuff(const void* data, size_t _size)
 	{
 		// realloc buffer
 		if(!this->size){
-			this->lpbuffer = (uint8_t*) ::malloc( newSize );
+			this->lpbuffer = (uint8_t*) alloc_malloc( newSize );
 		}
 		else{
-			this->lpbuffer = (uint8_t*) ::realloc( this->lpbuffer, newSize );
+			this->lpbuffer = (uint8_t*) alloc_realloc( this->lpbuffer, newSize );
 		}
 	}
 	if(!this->lpbuffer) return false;
@@ -284,10 +285,10 @@ bool SigCompBuffer::removeBuff(size_t pos, size_t _size)
 	{
 		// realloc
 		if(!this->size){
-			this->lpbuffer = (uint8_t*) malloc( newSize );
+			this->lpbuffer = (uint8_t*) alloc_malloc( newSize );
 		}
 		else{
-			this->lpbuffer = (uint8_t*) realloc( this->lpbuffer, newSize );
+			this->lpbuffer = (uint8_t*) alloc_realloc( this->lpbuffer, newSize );
 		}
 	}
 	if(this->lpbuffer){
@@ -306,7 +307,7 @@ void SigCompBuffer::freeBuff()
 {
 	if(this->lpbuffer && this->size && this->owner) 
 	{
-		free(this->lpbuffer);
+		alloc_free(this->lpbuffer);
 	}
 	this->lpbuffer = NULL;
 	this->size = this->index_bytes = this->index_bits = NULL;
