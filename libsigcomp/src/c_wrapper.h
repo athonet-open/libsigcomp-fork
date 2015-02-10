@@ -39,6 +39,8 @@
 #	define BOOLEAN	short
 #endif
 
+#include "alloc.h"
+
 #ifndef __cplusplus
 typedef void SigCompManager;
 typedef void DecompressionResult;

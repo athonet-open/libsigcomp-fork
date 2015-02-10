@@ -17,13 +17,20 @@
 #ifndef __ALLOC_H__
 #define __ALLOC_H__
 
+#include <stdlib.h>
+#include <stdint.h>
 #include <stddef.h>
-
-void* operator new(size_t size);
-
-void operator delete(void *);
-
-void *malloc (size_t __size);
-void free (void * __ptr);
+#ifdef __cplusplus
+extern "C" {
+#endif
+/**
+ * @brief Initialize the allocation module
+ * 
+ * Retrieves actual original references to malloc/free
+ */
+void alloc_init();
+#ifdef __cplusplus
+};
+#endif
 
 #endif

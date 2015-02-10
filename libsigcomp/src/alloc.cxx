@@ -15,28 +15,40 @@
  * @brief
  */
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <dlfcn.h>
 #include "alloc.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-void *
-operator new(size_t size)
-{
-	
-}
+static void* (*orig_malloc)(size_t) = NULL;
+static void (*orig_free)(void *) = NULL;
 
 void
-operator delete(void *)
-{
-	
+alloc_init() {
+    orig_malloc = (void* (*)(size_t)) dlsym(RTLD_NEXT, "malloc");
+	orig_free = (void (*)(void *)) dlsym(RTLD_NEXT, "free");
 }
 
+/**
+ * @brief malloc replacement overrides malloc symbol
+ */
 void*
-malloc(size_t __size)
+malloc(unsigned long int __size)
 {
-
+	return orig_malloc(__size);
 }
-
+/**
+ * @brief free replacement overrides free symbol
+ */
 void
 free(void* __ptr)
 {
-
+	orig_free(__ptr);
 }
+
+#ifdef __cplusplus
+};
+#endif

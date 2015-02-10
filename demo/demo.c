@@ -201,12 +201,14 @@ const char* messages[] =
 		"\r\n"
 	//}
 };
+
 // extern "C" {
 int main(int argc, char **a_argv)
 {
 	int i = 0;
 	size_t outLen = 0;
 
+	alloc_init();
 	SigCompManager *manager1 = 0, *manager2 = 0;
 	DecompressionResult *result1 = 0, *result2 = 0;
 
