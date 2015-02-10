@@ -49,11 +49,12 @@ public:
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+	
 static void* 	(*orig_malloc)(size_t) = NULL;
 static void* 	(*orig_calloc)(size_t nmemb, size_t size);
 static void* 	(*orig_realloc)(void *ptr, size_t size);
 static void 	(*orig_free)(void *) = NULL;
+
 
 void
 alloc_init() {
@@ -97,28 +98,55 @@ free(void* __ptr)
 	orig_free(__ptr);
 }
 
+// #define USE_KAMAILIO_SHM_MEM_MGR
+#define SHM_MEM
+#undef SHM_SAFE_MALLOC
+#undef DBG_QM_MALLOC
+#define USE_PTHREAD_MUTEX
+#ifdef USE_KAMAILIO_SHM_MEM_MGR
+#include "../../../mem/shm_mem.h"
+#endif
+
 void* 
 alloc_malloc(size_t size)
 {
+#ifdef USE_KAMAILIO_SHM_MEM_MGR
+	return shm_malloc(size);
+#else
 	return orig_malloc(size);
+#endif
 }
 
 void* 
 alloc_calloc(size_t nmemb, size_t size)
 {
+#ifdef USE_KAMAILIO_SHM_MEM_MGR
+	void *res = shm_malloc(nmemb * size);
+	memset(res,0,nmemb * size);
+	return res;
+#else
 	return orig_calloc(nmemb, size);
+#endif
 }
 
 void* 
 alloc_realloc(void* ptr, size_t size)
 {
+#ifdef USE_KAMAILIO_SHM_MEM_MGR
+	return shm_realloc(ptr, size);
+#else
 	return orig_realloc(ptr, size);
+#endif
 }
 
 void
 alloc_free(void* ptr)
 {
+#ifdef USE_KAMAILIO_SHM_MEM_MGR
+	shm_free(ptr);
+#else
 	orig_free(ptr);
+#endif
 }
 
 void 
