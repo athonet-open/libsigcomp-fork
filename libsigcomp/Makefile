@@ -76,3 +76,6 @@ lib$(LIBNAME).so: $(LIBOBJ)
 
 clean:
 	rm -rf lib$(LIBNAME).so $(LIBOBJ)
+
+install:
+	cp lib$(LIBNAME).so /usr/lib/
