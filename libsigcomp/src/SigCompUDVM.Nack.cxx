@@ -19,6 +19,7 @@
 	
 */
 
+#include <iostream>
 #include "global_config.h"
 
 #include "SigCompUDVM.h"
@@ -88,17 +89,23 @@ void SigCompUDVM::createNackInfo(uint8_t reasonCode, SigCompBuffer* lpDetails, i
 	//
 	if(lpDetails && lpDetails->getSize())
 	{
-		this->lpResult->getNackInfo()->appendBuff(lpDetails->getBuffer(), lpDetails->getSize());
+		if(!this->lpResult->getNackInfo()->appendBuff(lpDetails->getBuffer(), lpDetails->getSize())) {
+			std::cout << "Buffer not allocated\n";
+		}
 	}
 	else if(reasonCode == BYTECODES_TOO_LARGE)
 	{
 		size_t memorySize = this->memory.getSize();
-		this->lpResult->getNackInfo()->appendBuff(&memorySize, 2);
+		if(!this->lpResult->getNackInfo()->appendBuff(&memorySize, 2)) {
+			std::cout << "Buffer not allocated\n";
+		}
 	}
 	else if(reasonCode == CYCLES_EXHAUSTED)
 	{
 		uint8_t cpb = this->stateHandler->getSigCompParameters()->getCpbValue();
-		this->lpResult->getNackInfo()->appendBuff(&cpb, 1);
+		if (!this->lpResult->getNackInfo()->appendBuff(&cpb, 1)) {
+			std::cout << "Buffer not allocated\n";
+		}
 	}
 
 	lpResult->setIsNack(true);
