@@ -46,8 +46,9 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 {
 	this->lock();
 
-	bool result = true, stateChanged, stateful;
-	
+	bool result = true, stateChanged, stateful, zret;
+	uint8_t* header;
+	size_t compressedDataLen;
 	DeflateData* data = NULL;
 
 	SigCompBuffer output_buffer;
@@ -80,19 +81,19 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		// Window size changed
 		data->freeGhostState();
 		data->zSetWindowBits(windowBits);
-		if( !(result = data->zReset()) ) /*goto bail;*/ return false;
+		if( !(result = data->zReset()) ) goto bail;
 	}
 	else if(!data->getGhostState())
 	{
 		// No ghost --> reset zlib
 		data->getGhostCopyOffset() = 0;
-		if( !(result = data->zReset()) ) /*goto bail;*/ return false;
+		if( !(result = data->zReset()) ) goto bail;
 	}
 
 	//***********************************************
 	//	SigComp headers
 	//
-	uint8_t* header = output_buffer.getBuffer(pointer++);
+	header = output_buffer.getBuffer(pointer++);
 
 	
 	/* SigComp Header */
@@ -151,12 +152,10 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	//***********************************************
 	//	Compress data using ZLIB
 	//
-	size_t compressedDataLen = (output_size-pointer);
-	bool zret = data->zCompress(input_ptr, input_size, output_buffer.getBuffer(pointer), &compressedDataLen, &stateChanged);
+	compressedDataLen = (output_size-pointer);
+	zret = data->zCompress(input_ptr, input_size, output_buffer.getBuffer(pointer), &compressedDataLen, &stateChanged);
 	if(!zret){
-		//result = false;
-		//goto bail;
-		return false;
+		goto bail;
 	}
 	pointer+=compressedDataLen;
 	output_size = (pointer);
@@ -189,8 +188,10 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 
 	//output_buffer.print(2000);
 	this->unlock();
-//bail:
 	return result;
+bail:
+	this->unlock();
+	return false;
 }
 
 __NS_DECLARATION_END__
