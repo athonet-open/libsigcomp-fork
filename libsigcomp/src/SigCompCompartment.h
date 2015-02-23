@@ -67,7 +67,7 @@ public:
 	SigCompBuffer* getRetFeedback() { return this->lpRetFeedback; }
 
 	void clearStates();
-	uint32_t countStates();
+	uint32_t unsafecountStates();
 	void freeStateByPriority();
 	void freeState(SigCompState* &lpState);
 	void freeStates(lptempStateToFreeDesc *tempStates, uint8_t size);

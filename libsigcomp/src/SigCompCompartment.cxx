@@ -133,13 +133,9 @@ void SigCompCompartment::clearStates()
 	this->unlock();
 }
 
-uint32_t SigCompCompartment::countStates()
+uint32_t SigCompCompartment::unsafecountStates()
 {
-	this->lock();
-
 	return this->local_states.size();
-
-	this->unlock();
 }
 
 /**
