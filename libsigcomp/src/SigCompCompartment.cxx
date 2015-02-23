@@ -133,6 +133,15 @@ void SigCompCompartment::clearStates()
 	this->unlock();
 }
 
+uint32_t SigCompCompartment::countStates()
+{
+	this->lock();
+
+	return this->local_states.size();
+
+	this->unlock();
+}
+
 /**
 Free one state with the lowest priority
 */
