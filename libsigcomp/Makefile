@@ -42,7 +42,8 @@ GPPCOMPILE=g++
 LINK=g++
 CFLAGS+=-fPIC
 CFLAGS+=-g
-CFLAGS+=-O2
+LDFLAGS+=-g
+#CFLAGS+=-O2
 CFLAGS+=-Wno-attributes
 CFLAGS+=-DHAVE_CONFIG_H
 CPPFLAGS+=-Wno-conversion-null
@@ -57,7 +58,7 @@ INCLUDES+=-I./
 
 
 lib$(LIBNAME).so: $(LIBOBJ)
-	$(LINK) $(LIBLDFLAGS) -o lib$(LIBNAME).so $(LIBOBJ)
+	$(LINK) $(LIBLDFLAGS) $(LDFLAGS) -o lib$(LIBNAME).so $(LIBOBJ)
 
 %.o: %.c
 	$(GCCCOMPILE) $(CFLAGS) $(INCLUDES) -c $< -o $@
