@@ -47,11 +47,13 @@ public:
 							uint16_t minimum_access_length, uint16_t state_retention_priority);
 	~SigCompState();
 
-	INLINE bool operator == (const SigCompState &state) const;
+	//INLINE bool operator == (const SigCompState &state) const;
+	INLINE bool operator == (SigCompState &state);
 
 	void makeValid();
 	INLINE SigCompBuffer* getStateValue();
-	INLINE const SigCompBuffer* getStateIdentifier()const;
+	//INLINE const SigCompBuffer* getStateIdentifier()const;
+	INLINE SigCompBuffer* getStateIdentifier();
 
 	INLINE const uint16_t getStateLength()const { return this->state_length; }
 	INLINE const void setStateLength(uint16_t length) { this->state_length = length; }

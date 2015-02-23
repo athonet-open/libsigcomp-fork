@@ -18,7 +18,8 @@
 
 	
 */
-
+#include <fstream>
+#include <sstream>
 #include "global_config.h"
 #include "SigCompCompartment.h"
 
@@ -26,6 +27,12 @@ using namespace std;
 
 __NS_DECLARATION_BEGIN__
 
+static inline void write_to_log( const std::string &text )
+{
+	std::ofstream log_file(
+        	"/tmp/libSigComp.log", std::ios_base::out | std::ios_base::app );
+	log_file << text << std::endl;
+}                            
 /*
 SigComp Compartment constructor. An application-specific grouping of messages that relate to a peer
       endpoint.
@@ -241,17 +248,47 @@ findState
 uint16_t SigCompCompartment::findState(const SigCompBuffer* partial_identifier, SigCompState** lpState)
 {
 	uint16_t count = 0;
-	
+
+
 	this->lock();
 
+		
+	// DEBUG	
+	std::stringstream tmp;
+	SigCompBuffer* tmp_buffer;
+	tmp_buffer = const_cast<SigCompBuffer*>(partial_identifier);
+	tmp << "SigCompCompartment::findState(): searching state for compartment " << this->getIdentifier() << " with partial id:";
+	write_to_log(tmp.str());
+	tmp.str("");
+	tmp.clear();
+	tmp_buffer->print();
+	// DEBUG	
+	
 	list<SigCompState* >::iterator it_states;
 	for ( it_states=this->local_states.begin(); it_states!=this->local_states.end(); it_states++ ){
+		// DEBUG
+		SigCompBuffer* tbuffer;
+	        tbuffer = const_cast<SigCompBuffer*>((*it_states)->getStateIdentifier());
+		tbuffer->print();
+		//(*it_states)->getStateIdentifier()->print();
+		// DEBUG
 		if((*it_states)->getStateIdentifier()->startsWith(partial_identifier)){
 			*lpState = *it_states; // override
 			count++;
+			// DEBUG	
+			tmp << "state matched";
+			write_to_log(tmp.str());
+			tmp.str("");
+			tmp.clear();
+			// DEBUG	
 		}
 	}
 
+	// DEBUG	
+	tmp << "End of search";
+	write_to_log(tmp.str());
+	// DEBUG	
+	
 	this->unlock();
 
 	return count;
@@ -269,8 +306,8 @@ void SigCompCompartment::addState(SigCompState* &lpState)
 	
 	// TEST
 	/*printf("STATE_VALUE\n");
-	lpState->getStateValue()->print();
-	const_cast<SigCompBuffer*>(lpState->getStateIdentifier())->print();*/
+	lpState->getStateValue()->print(); */
+	const_cast<SigCompBuffer*>(lpState->getStateIdentifier())->print();
 
 	lpState = NULL;
 
