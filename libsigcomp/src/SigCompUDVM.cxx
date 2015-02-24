@@ -69,7 +69,7 @@ SigCompUDVM::SigCompUDVM(const SigCompMessage* _sigCompMessage, const SigCompSta
 		// Find the provided state
 		SigCompState* lpState = NULL;
 		uint16_t match_count = this->stateHandler->findState(&this->sigCompMessage->stateId, &lpState);
-		if( (!match_count || match_count>1 || !lpState)
+		if( (!match_count || /*match_count>1 ||*/ !lpState)
 			|| (lpState->getMinimumAccessLength() > this->sigCompMessage->stateId.getSize())
 			|| ((lpState->getStateAddress()+lpState->getStateLength()) > this->memory.getSize()) )
 		{
