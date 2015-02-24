@@ -110,17 +110,13 @@ bool DeflateData::zCompress(const void* in, size_t inLen, void* out, size_t* out
 #if USE_ONLY_ACKED_STATES
 	if(!this->stream_acked.dataWaitingAck){
 		this->stream_acked.dataWaitingAck = true;
-		*stateChanged = true;
-	}else{
-		*stateChanged = false;
 	}
-
 	// END() + COPY() ==> use acked state
 	this->stream_1.end();
 	this->stream_1.copy(&this->stream_acked);
-#else
-	*stateChanged = true;
 #endif
+	
+	*stateChanged = true;
 	
 	// IN
 	this->stream_1.zs.next_in = (Bytef*)in;

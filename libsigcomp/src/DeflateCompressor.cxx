@@ -178,6 +178,9 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		//	First time or synchronize failure (NACK reason=STATE_NOT_FOUND)
 		if(!data->getGhostState()){
 			data->createGhost(state_len, lpCompartment->getLocalParameters());
+		}else{
+			data->freeGhostState();
+			data->createGhost(state_len, lpCompartment->getLocalParameters());
 		}
 	}
 #if USE_ONLY_ACKED_STATES
