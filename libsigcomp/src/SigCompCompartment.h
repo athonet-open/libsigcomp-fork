@@ -67,7 +67,6 @@ public:
 	SigCompBuffer* getRetFeedback() { return this->lpRetFeedback; }
 
 	void clearStates();
-	uint32_t unsafecountStates();
 	void freeStateByPriority();
 	void freeState(SigCompState* &lpState);
 	void freeStates(lptempStateToFreeDesc *tempStates, uint8_t size);
@@ -75,6 +74,7 @@ public:
 	uint16_t findState(const SigCompBuffer* partial_identifier, SigCompState** lpState);
 	void freeGhostState();
 
+	void printState(const char *prefix , SigCompState* &lpState);
 	//
 	//	Compressor data
 	//

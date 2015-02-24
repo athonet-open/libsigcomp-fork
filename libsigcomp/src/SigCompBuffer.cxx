@@ -25,9 +25,6 @@
 #include "alloc.h"
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
 #include <math.h>
 
 __NS_DECLARATION_BEGIN__
@@ -316,17 +313,12 @@ void SigCompBuffer::freeBuff()
 	this->size = this->index_bytes = this->index_bits = NULL;
 }
 
+#if defined(_DEBUG) || defined(DEBUG)
 void SigCompBuffer::print(int64_t size/*=-1*/)
 {
 	size_t size_to_print = (size_t) ((size < 0) ? this->size : size);
-	if( !size_to_print ) {
-    		std::ofstream log_file(
-        		"/tmp/libSigComp.log", std::ios_base::out | std::ios_base::app );
-		log_file << "size_to_print is " << size_to_print << std::endl;
-		return;
-	}
+	if( !size_to_print ) return;
 
-	std::stringstream tmp;
 	for(size_t i=0; i<size_to_print; i+=2)
 	{
 		char s[10]; memset(s, 0, 10);
@@ -351,50 +343,11 @@ void SigCompBuffer::print(int64_t size/*=-1*/)
 			sprintf(s, i?"%0.4x":"0x%0.4x", value);
 #endif
 		}
-		//std::cout << s << " ";
-		tmp << s << " ";
+		std::cout << s << " ";
 	}
-	tmp << " end of state id";
-    	std::ofstream log_file(
-        	"/tmp/libSigComp.log", std::ios_base::out | std::ios_base::app );
-    	log_file << tmp.str() << std::endl;
-	//std::cout << std::endl << std::endl;
+	std::cout << std::endl << std::endl;
 }
-//#if defined(_DEBUG) || defined(DEBUG)
-//void SigCompBuffer::print(int64_t size/*=-1*/)
-//{
-//	size_t size_to_print = (size_t) ((size < 0) ? this->size : size);
-//	if( !size_to_print ) return;
-//
-//	for(size_t i=0; i<size_to_print; i+=2)
-//	{
-//		char s[10]; memset(s, 0, 10);
-//		uint16_t value;
-//
-//		if((i+1)==size_to_print) 
-//		{
-//			// last 2-byte lay in 1byte
-//			value = *this->getBuffer(i);
-//#if 0
-//			sprintf_s(s, 10, i?"%0.2x":"0x%0.2x", value);
-//#else
-//			sprintf(s, i?"%0.2x":"0x%0.2x", value);
-//#endif
-//		}
-//		else
-//		{
-//			value = BINARY_GET_2BYTES(this->getBuffer(i));
-//#if 0
-//			sprintf_s(s, 10, i?"%0.4x":"0x%0.4x", value);
-//#else
-//			sprintf(s, i?"%0.4x":"0x%0.4x", value);
-//#endif
-//		}
-//		std::cout << s << " ";
-//	}
-//	std::cout << std::endl << std::endl;
-//}
-//#endif
+#endif
 
 __NS_DECLARATION_END__
 

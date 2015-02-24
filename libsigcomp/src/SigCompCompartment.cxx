@@ -18,21 +18,15 @@
 
 	
 */
-#include <fstream>
-#include <sstream>
+#include <stdio.h>
 #include "global_config.h"
 #include "SigCompCompartment.h"
+#include "log.h"
 
 using namespace std;
 
 __NS_DECLARATION_BEGIN__
 
-static inline void write_to_log( const std::string &text )
-{
-	std::ofstream log_file(
-        	"/tmp/libSigComp.log", std::ios_base::out | std::ios_base::app );
-	log_file << text << std::endl;
-}                            
 /*
 SigComp Compartment constructor. An application-specific grouping of messages that relate to a peer
       endpoint.
@@ -134,15 +128,11 @@ void SigCompCompartment::clearStates()
 	this->lock();
 
 	SAFE_CLEAR_LIST(this->local_states);
+	printf("SigCompCompartment::clearStates\n");
 
 	this->total_memory_left = this->total_memory_size;
 
 	this->unlock();
-}
-
-uint32_t SigCompCompartment::unsafecountStates()
-{
-	return this->local_states.size();
 }
 
 /**
@@ -183,6 +173,7 @@ void SigCompCompartment::freeStateByPriority()
 	}
 
 	if(lpState){
+		printState("SigCompCompartment::freeStateByPriority", lpState);
 		this->total_memory_left+= GET_STATE_SIZE(lpState);
 		this->local_states.remove(lpState);
 		SAFE_DELETE_PTR(lpState);
@@ -198,6 +189,7 @@ void SigCompCompartment::freeState(SigCompState* &lpState)
 	this->lock();
 
 	this->total_memory_left+= GET_STATE_SIZE(lpState);
+	printState("SigCompCompartment::freeState", lpState);
 	this->local_states.remove(lpState);
 	SAFE_DELETE_PTR(lpState);
 
@@ -235,6 +227,7 @@ void SigCompCompartment::freeStates(lptempStateToFreeDesc *tempStates, uint8_t s
 			}
 		}
 		if(lpState){
+			printState("SigCompCompartment::freeStates", lpState);
 			this->freeState(lpState);
 		}
 	}
@@ -253,47 +246,18 @@ findState
 uint16_t SigCompCompartment::findState(const SigCompBuffer* partial_identifier, SigCompState** lpState)
 {
 	uint16_t count = 0;
-
-
+	
 	this->lock();
 
-		
-	// DEBUG	
-	std::stringstream tmp;
-	SigCompBuffer* tmp_buffer;
-	tmp_buffer = const_cast<SigCompBuffer*>(partial_identifier);
-	tmp << "SigCompCompartment::findState(): searching state for compartment " << this->getIdentifier() << " with partial id:";
-	write_to_log(tmp.str());
-	tmp.str("");
-	tmp.clear();
-	tmp_buffer->print();
-	// DEBUG	
-	
 	list<SigCompState* >::iterator it_states;
 	for ( it_states=this->local_states.begin(); it_states!=this->local_states.end(); it_states++ ){
-		// DEBUG
-		SigCompBuffer* tbuffer;
-	        tbuffer = const_cast<SigCompBuffer*>((*it_states)->getStateIdentifier());
-		tbuffer->print();
-		//(*it_states)->getStateIdentifier()->print();
-		// DEBUG
 		if((*it_states)->getStateIdentifier()->startsWith(partial_identifier)){
 			*lpState = *it_states; // override
+			printState("SigCompCompartment::findState", *lpState);
 			count++;
-			// DEBUG	
-			tmp << "state matched";
-			write_to_log(tmp.str());
-			tmp.str("");
-			tmp.clear();
-			// DEBUG	
 		}
 	}
 
-	// DEBUG	
-	tmp << "End of search";
-	write_to_log(tmp.str());
-	// DEBUG	
-	
 	this->unlock();
 
 	return count;
@@ -306,13 +270,14 @@ void SigCompCompartment::addState(SigCompState* &lpState)
 	this->lock();
 
 	lpState->makeValid();
+	printState("SigCompCompartment::addState", lpState);
 	this->local_states.push_back(lpState);
 	this->total_memory_left-= GET_STATE_SIZE(lpState);
 	
 	// TEST
 	/*printf("STATE_VALUE\n");
-	lpState->getStateValue()->print(); */
-	const_cast<SigCompBuffer*>(lpState->getStateIdentifier())->print();
+	lpState->getStateValue()->print();
+	const_cast<SigCompBuffer*>(lpState->getStateIdentifier())->print();*/
 
 	lpState = NULL;
 
@@ -331,6 +296,23 @@ void SigCompCompartment::freeGhostState()
 	}
 	this->unlock();
 }
+
+void SigCompCompartment::printState(const char* prefix, SigCompState* &lpState)
+{
+		
+	SigCompBuffer *id = (SigCompBuffer *)lpState->getStateIdentifier();	
+	log_log(
+		"%s - \t[%02X:%02X:%02X:%02X:%02X:%02X]\n",
+		prefix,
+		(id->getBuffer(0))[0],
+		(id->getBuffer(0))[1],
+		(id->getBuffer(0))[2],
+		(id->getBuffer(0))[3],
+		(id->getBuffer(0))[4],
+		(id->getBuffer(0))[5]
+		);
+}
+
 
 /**
 */

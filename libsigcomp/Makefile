@@ -36,6 +36,8 @@ LIBOBJ+=$(SRCPATH)SipDictionaryState.o
 LIBOBJ+=$(SRCPATH)trees.o
 LIBOBJ+=$(SRCPATH)zutil.o
 LIBOBJ+=$(SRCPATH)alloc.o
+LIBOBJ+=$(SRCPATH)log.o
+LIBOBJ+=$(SRCPATH)init.o
 
 GCCCOMPILE=gcc
 GPPCOMPILE=g++

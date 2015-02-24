@@ -26,7 +26,6 @@
 
 #include "MYTYPES.h"
 #include <string>
-#include <sstream>
 
 #define P_BIT_MSB_TO_LSB 0
 #define P_BIT_LSB_TO_MSB 1
@@ -70,10 +69,9 @@ public:
 	
 	INLINE uint8_t& getP_BIT() { return this->P_BIT; }
 
+#if defined(_DEBUG) || defined(DEBUG)
 	void print(int64_t size=-1);
-//#if defined(_DEBUG) || defined(DEBUG)
-//	void print(int64_t size=-1);
-//#endif
+#endif
 
 private:
 	size_t	size;
