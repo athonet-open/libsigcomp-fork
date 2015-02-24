@@ -1,1 +1,3 @@
 *.o
+lib.map
+libsigcomp.so
