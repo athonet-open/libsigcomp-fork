@@ -20,6 +20,7 @@
 #include "global_config.h"
 #include "DeflateCompressor.h"
 #include "DeflateData.h"
+#include "SigCompState.h"
 
 //#include <math.h>
 #define LIBSIGCOMP_MIN(a, b) (a<b?a:b)

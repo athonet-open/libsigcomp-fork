@@ -74,7 +74,7 @@ public:
 	uint16_t findState(const SigCompBuffer* partial_identifier, SigCompState** lpState);
 	void freeGhostState();
 
-	void printState(const char *prefix , SigCompState* &lpState);
+	void logStateAccess(const char *prefix , SigCompState* &lpState);
 	//
 	//	Compressor data
 	//

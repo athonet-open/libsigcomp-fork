@@ -89,7 +89,7 @@ public:
 	~DeflateData();
 
 public: /* OVERRIDE FROM [SigCompCompressorData] */
-	INLINE void freeGhostState() { SAFE_DELETE_PTR(this->ghostState); this->ghost_copy_offset = 0; }
+	void freeGhostState();
 	void ackGhost(const SigCompBuffer* stateid);
 
 public:

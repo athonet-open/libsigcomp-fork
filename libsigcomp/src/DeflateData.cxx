@@ -23,6 +23,7 @@
 
 #include "global_config.h"
 #include "DeflateData.h"
+#include "log.h"
 
 __NS_DECLARATION_BEGIN__
 
@@ -80,6 +81,17 @@ DeflateData::DeflateData(bool stream, int z_level/*=Z_BEST_COMPRESSION*/, int z_
 	this->initialized = false;
 }
 
+void DeflateData::freeGhostState()
+{
+	if (this->ghostState) {
+		log_log("DeflateData::freeGhostState - \t");
+		ghostState->printStateId();
+		log_log("\n");
+	}
+	SAFE_DELETE_PTR(this->ghostState); this->ghost_copy_offset = 0;
+}
+
+
 /**
 */
 void DeflateData::ackGhost(const SigCompBuffer* stateid)
@@ -87,8 +99,16 @@ void DeflateData::ackGhost(const SigCompBuffer* stateid)
 	this->lock();
 	
 #if USE_ONLY_ACKED_STATES
+	const uint8_t *id = stateid->getReadOnlyBuffer(0);
+	log_log("DeflateData::ackGhost toack:");
+	log_log("[%02X:%02X:%02X:%02X:%02X:%02X] - ",
+				id[0],id[1],id[2],id[3],id[4],id[5]);
+	
 	if(this->ghostState)
 	{
+		log_log("ghostState:");
+		ghostState->printStateId();
+		log_log("\n");
 		// Update ghost
 		if(this->ghostState->getStateIdentifier()->startsWith(stateid)){
 			// END() + COPY()
@@ -96,6 +116,7 @@ void DeflateData::ackGhost(const SigCompBuffer* stateid)
 			this->stream_acked.copy(&this->stream_1);
 			this->stream_acked.stateful = true;
 			this->stream_acked.dataWaitingAck = false;
+			
 		}
 	}
 #endif

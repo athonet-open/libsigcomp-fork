@@ -23,6 +23,7 @@
 
 #include "global_config.h"
 #include "DeflateData.h"
+#include "log.h"
 
 __NS_DECLARATION_BEGIN__
 
@@ -139,6 +140,10 @@ void DeflateData::createGhost( uint16_t state_length, lpstruct_sigcomp_parameter
 #endif
 	::memmove( ghostState->getStateValue()->getBuffer(GHOST_DEFLATE_BYTECODE_INDEX), DeflateData::deflate_bytecode, DEFLATE_BYTECODE_LEN );
 
+	log_log("DeflateData::createGhost - \t");
+	ghostState->printStateId();
+	log_log("\n");
+	
 	this->unlock();
 }
 
@@ -169,6 +174,9 @@ void DeflateData::updateGhost(const uint8_t* input_ptr, size_t input_size)
 	/*printf("GHOST\n");
 	ghostState->getStateValue()->print();
 	const_cast<SigCompBuffer*>(ghostState->getStateIdentifier())->print();*/
+	log_log("DeflateData::updateGhost - \t");
+	ghostState->printStateId();
+	log_log("\n");
 	
 	this->unlock();
 }

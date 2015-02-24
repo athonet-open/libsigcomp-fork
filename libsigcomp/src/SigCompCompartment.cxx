@@ -173,7 +173,7 @@ void SigCompCompartment::freeStateByPriority()
 	}
 
 	if(lpState){
-		printState("SigCompCompartment::freeStateByPriority", lpState);
+		logStateAccess("SigCompCompartment::freeStateByPriority", lpState);
 		this->total_memory_left+= GET_STATE_SIZE(lpState);
 		this->local_states.remove(lpState);
 		SAFE_DELETE_PTR(lpState);
@@ -189,7 +189,7 @@ void SigCompCompartment::freeState(SigCompState* &lpState)
 	this->lock();
 
 	this->total_memory_left+= GET_STATE_SIZE(lpState);
-	printState("SigCompCompartment::freeState", lpState);
+	logStateAccess("SigCompCompartment::freeState", lpState);
 	this->local_states.remove(lpState);
 	SAFE_DELETE_PTR(lpState);
 
@@ -227,7 +227,7 @@ void SigCompCompartment::freeStates(lptempStateToFreeDesc *tempStates, uint8_t s
 			}
 		}
 		if(lpState){
-			printState("SigCompCompartment::freeStates", lpState);
+			logStateAccess("SigCompCompartment::freeStates", lpState);
 			this->freeState(lpState);
 		}
 	}
@@ -253,7 +253,7 @@ uint16_t SigCompCompartment::findState(const SigCompBuffer* partial_identifier, 
 	for ( it_states=this->local_states.begin(); it_states!=this->local_states.end(); it_states++ ){
 		if((*it_states)->getStateIdentifier()->startsWith(partial_identifier)){
 			*lpState = *it_states; // override
-			printState("SigCompCompartment::findState", *lpState);
+			logStateAccess("SigCompCompartment::findState", *lpState);
 			count++;
 		}
 	}
@@ -270,7 +270,7 @@ void SigCompCompartment::addState(SigCompState* &lpState)
 	this->lock();
 
 	lpState->makeValid();
-	printState("SigCompCompartment::addState", lpState);
+	logStateAccess("SigCompCompartment::addState", lpState);
 	this->local_states.push_back(lpState);
 	this->total_memory_left-= GET_STATE_SIZE(lpState);
 	
@@ -297,20 +297,11 @@ void SigCompCompartment::freeGhostState()
 	this->unlock();
 }
 
-void SigCompCompartment::printState(const char* prefix, SigCompState* &lpState)
+void SigCompCompartment::logStateAccess(const char* prefix, SigCompState* &lpState)
 {
-		
-	SigCompBuffer *id = (SigCompBuffer *)lpState->getStateIdentifier();	
-	log_log(
-		"%s - \t[%02X:%02X:%02X:%02X:%02X:%02X]\n",
-		prefix,
-		(id->getBuffer(0))[0],
-		(id->getBuffer(0))[1],
-		(id->getBuffer(0))[2],
-		(id->getBuffer(0))[3],
-		(id->getBuffer(0))[4],
-		(id->getBuffer(0))[5]
-		);
+	log_log("%s - \t", prefix);
+	lpState->printStateId();
+	log_log("\n");
 }
 
 

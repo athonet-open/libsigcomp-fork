@@ -22,6 +22,7 @@
 #include "global_config.h"
 #include "SigCompState.h"
 #include "rfc3174_us-sha1.h"
+#include "log.h"
 
 //	
 // 3.3.3.  Locally Available State Items
@@ -130,3 +131,19 @@ INLINE const SigCompBuffer* SigCompState::getStateIdentifier()const
 }
 
 __NS_DECLARATION_END__
+
+void sigcomp::SigCompState::printStateId()
+{
+	SigCompBuffer * scbuff = (SigCompBuffer *) this->getStateIdentifier();
+	if (!scbuff) {
+		log_log("[ WARN: STATE NOT AVAILABLE ]");
+		return;
+	}
+	uint8_t * id = scbuff->getBuffer(0);
+	if (!id) {
+		log_log("[ WARN: ID NOT AVAILABLE ]");
+		return;
+	}
+	log_log("[%02X:%02X:%02X:%02X:%02X:%02X]",
+			id[0],id[1],id[2],id[3],id[4],id[5]);
+}

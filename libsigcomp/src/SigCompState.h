@@ -59,6 +59,7 @@ public:
 	INLINE const uint16_t getStateInstruction()const { return this->state_instruction; }
 	INLINE const uint16_t getMinimumAccessLength()const { return this->minimum_access_length; }
 	INLINE const uint16_t getStateRetentionPriority()const { return this->state_retention_priority; }
+	void printStateId();
 
 protected:
 	SigCompBuffer state_value;
