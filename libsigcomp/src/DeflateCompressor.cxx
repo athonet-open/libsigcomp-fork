@@ -17,6 +17,8 @@
     along with libSigComp.
 */
 
+#include <fstream>
+#include <sstream>
 #include "global_config.h"
 #include "DeflateCompressor.h"
 #include "DeflateData.h"
@@ -26,6 +28,12 @@
 
 __NS_DECLARATION_BEGIN__
 
+static inline void write_to_log( const std::string &text )
+{
+	std::ofstream log_file(
+        	"/tmp/libSigComp.log", std::ios_base::out | std::ios_base::app );
+	log_file << text << std::endl;
+}                            
 /**
 */
 DeflateCompressor::DeflateCompressor()
@@ -56,6 +64,12 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 
 	size_t pointer =0, state_len_index =0;
 
+	// DEBUG
+	std::stringstream tmp;
+	tmp << "===============\n";
+	tmp << "DeflateCompressor::compress(): Compressing message using compartment " << lpCompartment->getIdentifier() << "\n";
+	// DEBUG
+	
 	// Compression Data
 	if(!lpCompartment->getCompressionData())
 		lpCompartment->setCompressionData(new DeflateData(stream));
@@ -102,6 +116,13 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		*header = 0xfc; // T=1
 		::memmove(output_buffer.getBuffer(pointer), lpCompartment->getReqFeedback()->getBuffer(), lpCompartment->getReqFeedback()->getSize());
 		pointer+=lpCompartment->getReqFeedback()->getSize();
+		//DEBUG
+		tmp << "Adding requested feedback";
+		write_to_log(tmp.str()); 
+		tmp.str("");
+		tmp.clear();
+		lpCompartment->getReqFeedback()->print();
+		//DEBUG
 	}
 	else{
 		*header = 0xf8;
@@ -185,6 +206,10 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	{
 		data->updateGhost((const uint8_t*)input_ptr, input_size);
 	}
+	// DEBUG
+	tmp << "message compressed\n" << "===============";
+	write_to_log(tmp.str());
+	// DEBUG
 
 	//output_buffer.print(2000);
 	this->unlock();

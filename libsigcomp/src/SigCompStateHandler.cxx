@@ -13,11 +13,13 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 	
-    You should have received a copy of the GNU Lesser General Public License
+ << " "    You should have received a copy of the GNU Lesser General Public License
     along with libSigComp.  
 
 	
 */
+#include <fstream>
+#include <sstream>
 
 #include "global_config.h"
 #include "SigCompStateHandler.h"
@@ -25,10 +27,16 @@
 
 #include "SipDictionaryState.h"
 #include "PresenceDictionaryState.h"
-
 using namespace std;
 
 __NS_DECLARATION_BEGIN__
+
+static inline void write_to_log( const std::string &text )
+{
+    std::ofstream log_file(
+        "/tmp/libSigComp.log", std::ios_base::out | std::ios_base::app );
+    log_file << text << std::endl;
+}
 
 /**
 State handler constructor. Entity responsible for accessing and storing state information
@@ -168,6 +176,7 @@ Handle the decompression result. This method will create or free temporary state
 */
 void SigCompStateHandler::handleResult(lpDecompressionResult &lpResult)
 {
+	char tmpbuffer[256];
 	// FIXME: don't use interanl methods
 
 	//
@@ -185,9 +194,15 @@ void SigCompStateHandler::handleResult(lpDecompressionResult &lpResult)
 	//
 	// Find corresponding compartment (only if !S)
 	//
+	//std::stringstream s;
+	//s << "searching for compartment-id " << lpResult->getCompartmentId();
+	//write_to_log(s.str());
+	
 	SigCompCompartment* lpCompartment = this->getCompartment(lpResult->getCompartmentId());
 	uint16_t compartment_total_size = lpCompartment->getTotalMemorySize();
 
+	sprintf(tmpbuffer, "handleResult: creating states for compartment %llu",lpResult->getCompartmentId());
+	write_to_log(tmpbuffer);
 //compartment_create_states:
 	//
 	// Request state creation now we have the corresponding compartement
@@ -203,9 +218,21 @@ void SigCompStateHandler::handleResult(lpDecompressionResult &lpResult)
 		// FIXME: lock
 		for ( uint8_t i=0; i<lpResult->getTempStatesToCreateSize(); i++ )
 		{
+			
+			//std::stringstream tmp;
+			//uint8_t j = i;
+			//j++;
+			//tmp << "creating state " << j << "AAAAAAA";
+			//write_to_log(tmp.str());
+			sprintf(tmpbuffer,"creating state %d", i);
+			write_to_log(tmpbuffer);
+
 			SigCompState* &lpState = lpResult->getTempStatesToCreate()[i];
 			if(!lpState) continue;
 
+			//tmp << "";
+			//tmp << "state created ";
+			//write_to_log(tmp.str());
 			/*If the state creation request needs more state memory than the
 			total state_memory_size for the compartment, the state handler
 			deletes all but the first (state_memory_size - 64) bytes from the
@@ -217,6 +244,7 @@ void SigCompStateHandler::handleResult(lpDecompressionResult &lpResult)
 				size_t newSize = (compartment_total_size-64);
 				lpState->getStateValue()->removeBuff( newSize, (oldSize-newSize) );
 				lpState->setStateLength((uint16_t)newSize);
+				lpState->getStateIdentifier()->print();
 
 				lpCompartment->addState(lpState);
 			}
@@ -231,6 +259,7 @@ void SigCompStateHandler::handleResult(lpDecompressionResult &lpResult)
 				{
 					lpCompartment->freeStateByPriority();
 				}
+				lpState->getStateIdentifier()->print();
 				lpCompartment->addState(lpState);
 			}
 		}

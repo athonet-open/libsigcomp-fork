@@ -19,6 +19,8 @@
 	
 */
 
+#include <fstream>
+#include <sstream>
 #include "global_config.h"
 #include "SigCompDecompressorDisp.h"
 
@@ -28,6 +30,13 @@
 #define NACK_SUPPORTED (const_cast<SigCompStateHandler*>(this->stateHandler)->getSigCompParameters()->getSigCompVersion() >= 0x02)
 
 __NS_DECLARATION_BEGIN__
+
+static inline void write_to_log( const std::string &text )
+{
+    std::ofstream log_file(
+        "/tmp/libSigComp.log", std::ios_base::out | std::ios_base::app );
+    log_file << text << std::endl;
+}
 
 /**
 	SigCompDecompressorDisp
@@ -67,6 +76,15 @@ bool SigCompDecompressorDisp::decompress(LPCVOID input_ptr, size_t input_size, l
 	bool stream = lpResult->getIsStreamBased();
 	uint64_t streamId = 0;
 
+	// DEBUG
+	std::stringstream tmp;
+	tmp << "===============\n";
+	tmp << "SigCompDecompressorDisp::decompress(): deCompressing message using compartment " << lpResult->getCompartmentId();
+	write_to_log(tmp.str());
+	tmp.str("");
+	tmp.clear();
+	// DEBUG
+	
 	//
 	// Check if transport type changed
 	//
@@ -105,6 +123,11 @@ bool SigCompDecompressorDisp::decompress(LPCVOID input_ptr, size_t input_size, l
 		ret &= this->internalDecompress(input_ptr, input_size, &lpResult);
 	}
 
+	// DEBUG
+	tmp << "message decompressed\n";
+	tmp << "===============";
+	write_to_log(tmp.str());
+	// DEBUG
 	return ret;
 }
 
@@ -167,10 +190,15 @@ INLINE bool SigCompDecompressorDisp::internalDecompress(LPCVOID input_ptr, const
 	// decompression failed --> returns nack if supported
 	if(!ret)
 	{
+		// DEBUG	
+		std::stringstream tmp;
+		tmp << "decompression failure";
+		write_to_log(tmp.str());
+		// DEBUG	
 		// Decompression failed --> return NACK message to the application layer
 		(*lpResult)->setIsNack(NACK_SUPPORTED);
 	}
-	
+
 	// Delete UDVM entity
 	SAFE_DELETE_PTR(sigCompUDVM);
 
