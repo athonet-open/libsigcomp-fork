@@ -57,7 +57,7 @@ bool DeflateData::zInit()
 	}
 #endif
 
-	this->stream_1.stateful = this->stream_acked.stateful = false;
+	this->stream_1.acked = this->stream_acked.acked = false;
 	this->stream_1.dataWaitingAck = this->stream_acked.dataWaitingAck = false;
 	this->initialized = true;
 
@@ -73,7 +73,7 @@ bool DeflateData::zUnInit()
 		this->initialized = false;
 		
 		this->stream_1.dataWaitingAck = this->stream_acked.dataWaitingAck = false;
-		this->stream_1.stateful = this->stream_acked.stateful = false;
+		this->stream_1.acked = this->stream_acked.acked = false;
 
 		return (this->stream_1.end() != Z_STREAM_ERROR) && (this->stream_acked.end() != Z_STREAM_ERROR);
 	}

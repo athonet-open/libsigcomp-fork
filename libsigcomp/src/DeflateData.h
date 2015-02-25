@@ -66,10 +66,10 @@ typedef struct tag_deflateStream
 public:
 	z_stream zs;
 	bool dataWaitingAck;
-	bool stateful;
+	bool acked;
 
 	tag_deflateStream(){
-		stateful = false;
+		acked = false;
 		dataWaitingAck = false;
 	}
 	
@@ -103,8 +103,8 @@ public:
 	INLINE int zGetWindowBits(){ return this->zWindowBits; }
 	INLINE void zSetWindowBits(int windowSize){ this->zWindowBits = windowSize; }
 
-	INLINE bool isStateful() { return this->stream_acked.stateful; }
-	INLINE void setStateless() { this->stream_acked.stateful = false; }
+	INLINE bool isStateful() { return this->stream_acked.acked; }
+	INLINE void setStateless() { this->stream_acked.acked = false; }
 	
 public:
 	static const char* deflate_bytecode;
