@@ -115,7 +115,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	//
 	if(ackedState)
 	{
-		::memmove(output_buffer.getBuffer(pointer), const_cast<SigCompBuffer*>(data->getGhostState()->getStateIdentifier())->getBuffer(), 
+		::memmove(output_buffer.getBuffer(pointer), const_cast<SigCompBuffer*>(data->getGhostAckedState()->getStateIdentifier())->getBuffer(), 
 			PARTIAL_ID_LEN_VALUE);
 		pointer+=PARTIAL_ID_LEN_VALUE; *header |= PARTIAL_ID_LEN_CODE;
 	}

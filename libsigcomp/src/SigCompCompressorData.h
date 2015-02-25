@@ -36,6 +36,7 @@ public:
 	virtual void ackGhost(const SigCompBuffer* stateid);
 
 	virtual INLINE SigCompState* &getGhostState() { return this->ghostState; }
+	virtual INLINE SigCompState* &getGhostAckedState() { return this->ghostAckedState; }
 	virtual INLINE void freeGhostState() { SAFE_DELETE_PTR(this->ghostState); }
 	virtual INLINE void freeGhostAckedState() { SAFE_DELETE_PTR(this->ghostAckedState); }
 	//virtual INLINE void setGhostAcked(bool bAcked) { this->acked = bAcked; }
