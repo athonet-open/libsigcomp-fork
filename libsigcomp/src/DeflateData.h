@@ -65,12 +65,10 @@ typedef struct tag_deflateStream
 {
 public:
 	z_stream zs;
-	bool dataWaitingAck;
 	bool acked;
 
 	tag_deflateStream(){
 		acked = false;
-		dataWaitingAck = false;
 	}
 	
 	int end(){

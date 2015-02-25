@@ -58,7 +58,6 @@ bool DeflateData::zInit()
 #endif
 
 	this->stream_1.acked = this->stream_acked.acked = false;
-	this->stream_1.dataWaitingAck = this->stream_acked.dataWaitingAck = false;
 	this->initialized = true;
 
 	return true;
@@ -72,7 +71,6 @@ bool DeflateData::zUnInit()
 	{
 		this->initialized = false;
 		
-		this->stream_1.dataWaitingAck = this->stream_acked.dataWaitingAck = false;
 		this->stream_1.acked = this->stream_acked.acked = false;
 
 		return (this->stream_1.end() != Z_STREAM_ERROR) && (this->stream_acked.end() != Z_STREAM_ERROR);
@@ -108,9 +106,7 @@ bool DeflateData::zCompress(const void* in, size_t inLen, void* out, size_t* out
 	}
 	
 #if USE_ONLY_ACKED_STATES
-	if(!this->stream_acked.dataWaitingAck){
-		this->stream_acked.dataWaitingAck = true;
-	}
+	this->stream_acked.acked = false;
 	// END() + COPY() ==> use acked state
 	this->stream_1.end();
 	this->stream_1.copy(&this->stream_acked);
