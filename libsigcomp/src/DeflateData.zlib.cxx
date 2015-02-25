@@ -22,10 +22,8 @@
 */
 
 #include "global_config.h"
+#include "rfc3485_dictionary_sip.h"
 #include "DeflateData.h"
-#if 0
-#	include "rfc3485_dictionary_sip.h"
-#endif
 
 __NS_DECLARATION_BEGIN__
 
@@ -50,8 +48,8 @@ bool DeflateData::zInit()
 		return false;
 	}
 #if USE_DICTS_FOR_COMPRESSION
-	if( deflateSetDictionary(this->stream_1.zs, (const Bytef*)RFC3485_DICTIONARY_SIP_VALUE, RFC3485_DICTIONARY_SIP_VALUE_LENGTH) != Z_OK 
-		|| deflateSetDictionary(this->stream_acked.zs, (const Bytef*)RFC3485_DICTIONARY_SIP_VALUE, RFC3485_DICTIONARY_SIP_VALUE_LENGTH) != Z_OK )
+	if( deflateSetDictionary(&this->stream_1.zs, (const Bytef*)RFC3485_DICTIONARY_SIP_VALUE, RFC3485_DICTIONARY_SIP_VALUE_LENGTH) != Z_OK 
+		|| deflateSetDictionary(&this->stream_acked.zs, (const Bytef*)RFC3485_DICTIONARY_SIP_VALUE, RFC3485_DICTIONARY_SIP_VALUE_LENGTH) != Z_OK )
 	{
 		return false;
 	}

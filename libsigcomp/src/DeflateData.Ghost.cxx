@@ -23,6 +23,7 @@
 
 #include "global_config.h"
 #include "DeflateData.h"
+#include "rfc3485_dictionary_sip.h"
 #include "log.h"
 
 __NS_DECLARATION_BEGIN__

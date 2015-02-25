@@ -32,7 +32,7 @@
 #endif
 
 /** [[[[[[[[[[[[[[[[[ **/
-#define USE_DICTS_FOR_COMPRESSION				0
+#define USE_DICTS_FOR_COMPRESSION				1
 
 #define Z_DEFAULT_WINDOW_BITS 10 /* 1024*/
 
