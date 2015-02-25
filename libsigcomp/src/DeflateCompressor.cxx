@@ -68,7 +68,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	// State memory size code
 	uint8_t smsCode = LIBSIGCOMP_MIN(lpCompartment->getRemoteParameters()->getSmsCode(), lpCompartment->getRemoteParameters()->getDmsCode());
 #if USE_ONLY_ACKED_STATES
-	ackedState = (data->getGhostState() && data->isStateful());
+	ackedState = (data->getGhostAckedState() && data->isStateful());
 #else
 	stateful = (data->getGhostState() != NULL);
 #endif
@@ -113,7 +113,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	//
 	// Stateless or stateful?
 	//
-	if(ackedState)
+	if(data->getGhostAckedState())
 	{
 		::memmove(output_buffer.getBuffer(pointer), const_cast<SigCompBuffer*>(data->getGhostAckedState()->getStateIdentifier())->getBuffer(), 
 			PARTIAL_ID_LEN_VALUE);
@@ -166,7 +166,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	//
 	// Update state length
 	//
-	if(!ackedState)
+	if(!data->getGhostAckedState() || !data->getGhostState())
 	{		
 		uint16_t state_len = ( (1<<(data->zGetWindowBits())) + DEFLATE_UDVM_CIRCULAR_START_INDEX - 64 );
 		uint32_t hash_len = (state_len+8);
