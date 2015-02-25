@@ -48,7 +48,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 {
 	this->lock();
 
-	bool result = true, stateChanged, stateful, zret;
+	bool result = true, stateChanged, ackedState, zret;
 	uint8_t* header;
 	size_t compressedDataLen;
 	DeflateData* data = NULL;
@@ -68,12 +68,12 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	// State memory size code
 	uint8_t smsCode = LIBSIGCOMP_MIN(lpCompartment->getRemoteParameters()->getSmsCode(), lpCompartment->getRemoteParameters()->getDmsCode());
 #if USE_ONLY_ACKED_STATES
-	stateful = (data->getGhostState() && data->isStateful());
+	ackedState = (data->getGhostState() && data->isStateful());
 #else
 	stateful = (data->getGhostState() != NULL);
 #endif
 
-	log_log("DeflateCompressor::compress - \tstateful=%i\n", stateful);
+	log_log("DeflateCompressor::compress - \tstateful=%i\n", ackedState);
 	//
 	//	Init zLIB
 	//
@@ -113,7 +113,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	//
 	// Stateless or stateful?
 	//
-	if(stateful)
+	if(ackedState)
 	{
 		::memmove(output_buffer.getBuffer(pointer), const_cast<SigCompBuffer*>(data->getGhostState()->getStateIdentifier())->getBuffer(), 
 			PARTIAL_ID_LEN_VALUE);
@@ -166,7 +166,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	//
 	// Update state length
 	//
-	if(!stateful)
+	if(!ackedState)
 	{		
 		uint16_t state_len = ( (1<<(data->zGetWindowBits())) + DEFLATE_UDVM_CIRCULAR_START_INDEX - 64 );
 		uint32_t hash_len = (state_len+8);
