@@ -188,6 +188,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 #endif
 	{
 		data->updateGhost((const uint8_t*)input_ptr, input_size);
+		data->setStateless();
 	}
 
 	//output_buffer.print(2000);

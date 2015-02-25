@@ -104,6 +104,7 @@ public:
 	INLINE void zSetWindowBits(int windowSize){ this->zWindowBits = windowSize; }
 
 	INLINE bool isStateful() { return this->stream_acked.stateful; }
+	INLINE void setStateless() { this->stream_acked.stateful = false; }
 	
 public:
 	static const char* deflate_bytecode;
