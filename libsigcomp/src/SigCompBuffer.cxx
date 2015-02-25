@@ -29,6 +29,18 @@
 
 __NS_DECLARATION_BEGIN__
 
+SigCompBuffer::SigCompBuffer(SigCompBuffer& buffer)
+{
+	this->size = buffer.size;
+	this->lpbuffer = (uint8_t *) alloc_malloc(buffer.size);
+	memcpy(this->lpbuffer, buffer.lpbuffer, size);
+	this->index_bytes = buffer.index_bytes;
+	this->index_bits = buffer.index_bits;
+	this->owner = buffer.owner;
+	this->P_BIT = buffer.P_BIT;
+}
+
+
 // From: 
 //
 SigCompBuffer::SigCompBuffer(const void* _data /*= NULL*/, size_t _len /*= 0*/)
