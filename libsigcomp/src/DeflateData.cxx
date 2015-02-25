@@ -101,16 +101,15 @@ void DeflateData::ackGhost(const SigCompBuffer* stateid)
 #if USE_ONLY_ACKED_STATES
 	const uint8_t *id = stateid->getReadOnlyBuffer(0);
 	log_log("DeflateData::ackGhost toack:");
-	log_log("[%02X:%02X:%02X:%02X:%02X:%02X] - ",
+	log_log("[%02X:%02X:%02X:%02X:%02X:%02X]",
 				id[0],id[1],id[2],id[3],id[4],id[5]);
 	
 	if(this->ghostState)
 	{
-		log_log("ghostState:");
-		ghostState->printStateId();
-		log_log("\n");
 		// Update ghost
 		if(this->ghostState->getStateIdentifier()->startsWith(stateid)){
+			log_log(" - \tfound ghostState:");
+			ghostState->printStateId();
 			// END() + COPY()
 			this->stream_acked.end();
 			this->stream_acked.copy(&this->stream_1);
@@ -120,6 +119,7 @@ void DeflateData::ackGhost(const SigCompBuffer* stateid)
 			
 		}
 	}
+	log_log("\n");
 #endif
 
 	this->unlock();

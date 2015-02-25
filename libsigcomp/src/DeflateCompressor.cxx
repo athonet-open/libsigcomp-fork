@@ -70,10 +70,10 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 #if USE_ONLY_ACKED_STATES
 	ackedState = (data->getGhostAckedState() && data->isStateful());
 #else
-	stateful = (data->getGhostState() != NULL);
+	ackedState = (data->getGhostState() != NULL);
 #endif
 
-	log_log("DeflateCompressor::compress - \tstateful=%i\n", ackedState);
+	log_log("DeflateCompressor::compress - \tackedState=%i\n", ackedState);
 	//
 	//	Init zLIB
 	//
