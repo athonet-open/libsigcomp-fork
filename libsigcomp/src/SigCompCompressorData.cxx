@@ -28,6 +28,7 @@ SigCompCompressorData::SigCompCompressorData(bool _stream)
 :SafeObject(), stream(_stream)
 {
 	this->ghostState = NULL;
+	this->ghostAckedState = NULL;
 }
 
 /**
@@ -36,6 +37,7 @@ SigCompCompressorData::~SigCompCompressorData()
 {
 	// Delete Ghost state
 	SAFE_DELETE_PTR(this->ghostState);
+	SAFE_DELETE_PTR(this->ghostAckedState);
 }
 
 /**

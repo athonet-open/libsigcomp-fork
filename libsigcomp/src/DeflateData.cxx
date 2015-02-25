@@ -115,6 +115,8 @@ void DeflateData::ackGhost(const SigCompBuffer* stateid)
 			this->stream_acked.end();
 			this->stream_acked.copy(&this->stream_1);
 			this->stream_acked.acked = true;
+			if (this->ghostAckedState) this->freeGhostAckedState();
+			this->ghostAckedState = new SigCompState(*this->ghostState);
 			
 		}
 	}

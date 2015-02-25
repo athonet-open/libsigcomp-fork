@@ -37,12 +37,14 @@ public:
 
 	virtual INLINE SigCompState* &getGhostState() { return this->ghostState; }
 	virtual INLINE void freeGhostState() { SAFE_DELETE_PTR(this->ghostState); }
+	virtual INLINE void freeGhostAckedState() { SAFE_DELETE_PTR(this->ghostAckedState); }
 	//virtual INLINE void setGhostAcked(bool bAcked) { this->acked = bAcked; }
 	//virtual INLINE bool getGhostAcked() { return this->acked;  }
 	virtual INLINE bool isStream() { return this->stream; }
 	
 protected:
 	SigCompState* ghostState;
+	SigCompState* ghostAckedState;
 	//bool acked;
 	bool stream;
 };
