@@ -30,6 +30,7 @@ __NS_DECLARATION_BEGIN__
 class LIBSIGCOMP_API Mutex
 {
 public:
+	Mutex(Mutex &mutex);
 	Mutex();
 	~Mutex();
 

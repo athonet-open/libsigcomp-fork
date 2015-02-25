@@ -32,6 +32,22 @@
 
 __NS_DECLARATION_BEGIN__
 
+Mutex::Mutex(Mutex& mutex /* Never ever use this! */)
+{
+#if defined(USE_WIN32_THREADS)
+	this->lphandle = new HANDLE();
+	*((HANDLE*)this->lphandle) = CreateMutex(NULL, FALSE, NULL);
+	assert(this->lphandle);
+#elif defined(USE_PTHREAD_TRHREADS)
+	this->lphandle = new pthread_mutex_t;
+	pthread_mutexattr_t *lpattributes = NULL;
+	pthread_mutex_init( this->lphandle, lpattributes );
+#else
+	this->lphandle = NULL;
+#endif
+}
+
+
 Mutex::Mutex()
 {
 #if defined(USE_WIN32_THREADS)
