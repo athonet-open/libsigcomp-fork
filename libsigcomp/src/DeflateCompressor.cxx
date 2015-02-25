@@ -21,6 +21,7 @@
 #include "DeflateCompressor.h"
 #include "DeflateData.h"
 #include "SigCompState.h"
+#include "log.h"
 
 //#include <math.h>
 #define LIBSIGCOMP_MIN(a, b) (a<b?a:b)
@@ -72,6 +73,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	stateful = (data->getGhostState() != NULL);
 #endif
 
+	log_log("DeflateCompressor::compress - \tstateful=%i\n", stateful);
 	//
 	//	Init zLIB
 	//
@@ -177,8 +179,10 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 
 		//	First time or synchronize failure (NACK reason=STATE_NOT_FOUND)
 		if(!data->getGhostState()){
+			log_log("DeflateCompressor::compress - \tcreate GhostState\n");
 			data->createGhost(state_len, lpCompartment->getLocalParameters());
 		}else{
+			log_log("DeflateCompressor::compress - \trecreate GhostState\n");
 			data->freeGhostState();
 			data->createGhost(state_len, lpCompartment->getLocalParameters());
 		}
@@ -187,7 +191,9 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	if(stateChanged)
 #endif
 	{
+		log_log("DeflateCompressor::compress - \tupdate GhostState\n");
 		data->updateGhost((const uint8_t*)input_ptr, input_size);
+		log_log("DeflateCompressor::compress - \tset stateless\n");
 		data->setStateless();
 	}
 
