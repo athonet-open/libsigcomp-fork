@@ -168,7 +168,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	//
 	// Update state length
 	//
-	if(!data->getGhostAckedState() || !data->getGhostState())
+	if(!data->getGhostAckedState() || !data->getGhostState() || (data->getGhostAckedState() && !ackedState))
 	{		
 		uint16_t state_len = ( (1<<(data->zGetWindowBits())) + DEFLATE_UDVM_CIRCULAR_START_INDEX - 64 );
 		uint32_t hash_len = (state_len+8);
