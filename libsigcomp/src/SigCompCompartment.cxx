@@ -302,7 +302,7 @@ void SigCompCompartment::freeGhostAckedState()
 	this->lock();
 	if(this->compressorData)
 	{
-		this->compressorData->freeGhostState();
+		this->compressorData->freeGhostAckedState();
 	}
 	this->unlock();
 }
