@@ -25,6 +25,7 @@
 
 #include "SipDictionaryState.h"
 #include "PresenceDictionaryState.h"
+#include "log.h"
 
 using namespace std;
 
@@ -288,7 +289,10 @@ bool SigCompStateHandler::handleNack(const lpstruct_nack_info nack_info)
 					{
 						lpCompartement->freeState(lpState);
 					}*/
+					log_log("SigCompStateHandler::handleNack - \t STATE NOT FOUND\n");
+					log_log("SigCompStateHandler::handleNack - \t Free ghost state\n");
 					lpCompartement->freeGhostState();
+					log_log("SigCompStateHandler::handleNack - \t Free ghost acked state\n");
 					lpCompartement->freeGhostAckedState();
 				}
 				break;
