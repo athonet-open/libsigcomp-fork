@@ -73,6 +73,7 @@ public:
 	void addState(SigCompState* &lpState);
 	uint16_t findState(const SigCompBuffer* partial_identifier, SigCompState** lpState);
 	void freeGhostState();
+	void freeGhostAckedState();
 
 	void logStateAccess(const char *prefix , SigCompState* &lpState);
 	//

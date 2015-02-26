@@ -289,6 +289,7 @@ bool SigCompStateHandler::handleNack(const lpstruct_nack_info nack_info)
 						lpCompartement->freeState(lpState);
 					}*/
 					lpCompartement->freeGhostState();
+					lpCompartement->freeGhostAckedState();
 				}
 				break;
 

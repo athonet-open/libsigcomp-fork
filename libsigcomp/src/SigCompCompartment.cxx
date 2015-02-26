@@ -297,6 +297,17 @@ void SigCompCompartment::freeGhostState()
 	this->unlock();
 }
 
+void SigCompCompartment::freeGhostAckedState()
+{
+	this->lock();
+	if(this->compressorData)
+	{
+		this->compressorData->freeGhostState();
+	}
+	this->unlock();
+}
+
+
 void SigCompCompartment::logStateAccess(const char* prefix, SigCompState* &lpState)
 {
 	log_log("%s - \t", prefix);
