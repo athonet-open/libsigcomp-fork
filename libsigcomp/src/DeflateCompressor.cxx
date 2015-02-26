@@ -180,24 +180,18 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		*output_buffer.getBuffer(state_len_index+3) = (state_len & 0x00ff);
 
 		//	First time or synchronize failure (NACK reason=STATE_NOT_FOUND)
-		if(!data->getGhostState()){
-			log_log("DeflateCompressor::compress - \tcreate GhostState\n");
-			data->createGhost(state_len, lpCompartment->getLocalParameters());
-		}else{
-			log_log("DeflateCompressor::compress - \trecreate GhostState\n");
+		if(data->getGhostState()){
+			log_log("DeflateCompressor::compress - \tdelete GhostState\n");
 			data->freeGhostState();
-			data->createGhost(state_len, lpCompartment->getLocalParameters());
 		}
+		log_log("DeflateCompressor::compress - \tcreate GhostState\n");
+		data->createGhost(state_len, lpCompartment->getLocalParameters());
 	}
-#if USE_ONLY_ACKED_STATES
-	if(stateChanged)
-#endif
-	{
-		log_log("DeflateCompressor::compress - \tupdate GhostState\n");
-		data->updateGhost((const uint8_t*)input_ptr, input_size);
-		log_log("DeflateCompressor::compress - \tset stateless\n");
-		data->setStateless();
-	}
+	
+	log_log("DeflateCompressor::compress - \tupdate GhostState\n");
+	data->updateGhost((const uint8_t*)input_ptr, input_size);
+	log_log("DeflateCompressor::compress - \tset stateless\n");
+	data->setStateless();
 
 	//output_buffer.print(2000);
 	this->unlock();
