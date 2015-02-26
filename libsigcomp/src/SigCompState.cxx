@@ -46,6 +46,9 @@ SigCompState::SigCompState(uint16_t _state_length, uint16_t _state_address, uint
 */
 SigCompState::~SigCompState()
 {
+	log_log("SigCompState::~SigCompState - \t");
+	this->printStateId();
+	log_log("\n");
 	this->state_identifier.freeBuff();
 }
 
