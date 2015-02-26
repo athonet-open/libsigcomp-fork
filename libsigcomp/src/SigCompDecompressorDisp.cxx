@@ -21,6 +21,7 @@
 
 #include "global_config.h"
 #include "SigCompDecompressorDisp.h"
+#include "log.h"
 
 #include "SigCompUDVM.h"
 
@@ -67,6 +68,7 @@ bool SigCompDecompressorDisp::decompress(LPCVOID input_ptr, size_t input_size, l
 	bool stream = lpResult->getIsStreamBased();
 	uint64_t streamId = 0;
 
+	log_log("SigCompDecompressorDisp::decompress - \t######### RECEIVED ##########\n");
 	//
 	// Check if transport type changed
 	//

@@ -46,6 +46,7 @@ DeflateCompressor::~DeflateCompressor()
 */
 bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t &output_size, bool stream)
 {
+	
 	this->lock();
 
 	bool result = true, stateChanged, ackedState, zret;
@@ -58,6 +59,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 
 	size_t pointer =0, state_len_index =0;
 
+	log_log("DeflateCompressor::compress - \t######### SENDING ##########\n");
 	// Compression Data
 	if(!lpCompartment->getCompressionData())
 		lpCompartment->setCompressionData(new DeflateData(stream));
