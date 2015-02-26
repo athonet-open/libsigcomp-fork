@@ -168,7 +168,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	//
 	// Update state length
 	//
-	if(!data->getGhostAckedState() || !data->getGhostState() || (data->getGhostAckedState() && !ackedState))
+	if(!data->getGhostAckedState() || !data->getGhostState())
 	{		
 		uint16_t state_len = ( (1<<(data->zGetWindowBits())) + DEFLATE_UDVM_CIRCULAR_START_INDEX - 64 );
 		uint32_t hash_len = (state_len+8);
@@ -184,6 +184,13 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 			log_log("DeflateCompressor::compress - \tdelete GhostState\n");
 			data->freeGhostState();
 		}
+		log_log("DeflateCompressor::compress - \tcreate GhostState\n");
+		data->createGhost(state_len, lpCompartment->getLocalParameters());
+	}
+	if (data->getGhostAckedState() && !ackedState) {
+		uint16_t state_len = ( (1<<(data->zGetWindowBits())) + DEFLATE_UDVM_CIRCULAR_START_INDEX - 64 );
+		log_log("DeflateCompressor::compress - \tdelete GhostState\n");
+		data->freeGhostState();
 		log_log("DeflateCompressor::compress - \tcreate GhostState\n");
 		data->createGhost(state_len, lpCompartment->getLocalParameters());
 	}
