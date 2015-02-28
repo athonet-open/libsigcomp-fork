@@ -23,6 +23,7 @@
 #include "SigCompDecompressorDisp.h"
 
 #include "SigCompUDVM.h"
+#include "log.h"
 
 #define MAX_STREAM_BUFFER_SIZE 65535
 #define NACK_SUPPORTED (const_cast<SigCompStateHandler*>(this->stateHandler)->getSigCompParameters()->getSigCompVersion() >= 0x02)
@@ -67,6 +68,9 @@ bool SigCompDecompressorDisp::decompress(LPCVOID input_ptr, size_t input_size, l
 	bool stream = lpResult->getIsStreamBased();
 	uint64_t streamId = 0;
 
+	log_log("SigCompDecompressorDisp::decompress - \t######### RECEIVED ##########\n");
+        log_log("SigCompDecompressorDisp::decompress - \tdecompressing message using compartment %llu\n", lpResult->getCompartmentId());
+	
 	//
 	// Check if transport type changed
 	//
@@ -105,6 +109,7 @@ bool SigCompDecompressorDisp::decompress(LPCVOID input_ptr, size_t input_size, l
 		ret &= this->internalDecompress(input_ptr, input_size, &lpResult);
 	}
 
+        log_log("SigCompDecompressorDisp::decompress - \t######### END ##########\n");
 	return ret;
 }
 
@@ -167,6 +172,7 @@ INLINE bool SigCompDecompressorDisp::internalDecompress(LPCVOID input_ptr, const
 	// decompression failed --> returns nack if supported
 	if(!ret)
 	{
+		log_log("SigCompDecompressorDisp::internalDecompress: -\tdecompression failure\n");
 		// Decompression failed --> return NACK message to the application layer
 		(*lpResult)->setIsNack(NACK_SUPPORTED);
 	}

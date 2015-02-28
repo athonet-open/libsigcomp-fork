@@ -61,6 +61,7 @@ public:
 	const std::map<SigCompBuffer*, SigCompState*>* getDictionaries() { return &this->dictionaries; }
 	
 
+	void logStateAccess(const char* prefix, SigCompState* &lpState);
 private:
 	std::map<uint64_t, SigCompCompartment*> compartments;
 	struct_sigcomp_parameters sigcomp_parameters;

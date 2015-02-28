@@ -25,6 +25,7 @@
 
 #include "SipDictionaryState.h"
 #include "PresenceDictionaryState.h"
+#include "log.h"
 
 using namespace std;
 
@@ -206,6 +207,7 @@ void SigCompStateHandler::handleResult(lpDecompressionResult &lpResult)
 			SigCompState* &lpState = lpResult->getTempStatesToCreate()[i];
 			if(!lpState) continue;
 
+	
 			/*If the state creation request needs more state memory than the
 			total state_memory_size for the compartment, the state handler
 			deletes all but the first (state_memory_size - 64) bytes from the
@@ -217,22 +219,27 @@ void SigCompStateHandler::handleResult(lpDecompressionResult &lpResult)
 				size_t newSize = (compartment_total_size-64);
 				lpState->getStateValue()->removeBuff( newSize, (oldSize-newSize) );
 				lpState->setStateLength((uint16_t)newSize);
-
-				lpCompartment->addState(lpState);
+			}
+			
+			/* if the requested state already exists, don't add it */
+			SigCompState* dummyState;
+			lpState->makeValid();
+			if (lpCompartment->findState(lpState->getStateIdentifier() ,&dummyState)) {
+				logStateAccess("SigCompStateHandler::handleResult", lpState);
+				log_log("SigCompStateHandler::handleResult -\tstate already exists, won't add\n");
+				SAFE_DELETE_PTR(lpState);
+				continue;
 			}
 			/*If the state creation request exceeds the state memory allocated
 			to the compartment, sufficient items of state created by the same
 			compartment are freed until enough memory is available to
 			accommodate the new state.*/
-			else
+			// FIXME: could infinite loop happen?
+			while( lpCompartment->getTotalMemoryLeft() < GET_STATE_SIZE(lpState) )
 			{
-				// FIXME: could infinite loop happen?
-				while( lpCompartment->getTotalMemoryLeft() < GET_STATE_SIZE(lpState) )
-				{
-					lpCompartment->freeStateByPriority();
-				}
-				lpCompartment->addState(lpState);
+				lpCompartment->freeStateByPriority();
 			}
+			lpCompartment->addState(lpState);
 		}
 	}
 
@@ -339,6 +346,13 @@ void SigCompStateHandler::addPresenceDictionary()
 	}
 
 	this->unlock();
+}
+
+void SigCompStateHandler::logStateAccess(const char* prefix, SigCompState* &lpState)
+{
+        log_log("%s - \t", prefix);
+        lpState->printStateId();
+        log_log("\n");
 }
 
 __NS_DECLARATION_END__
