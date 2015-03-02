@@ -151,6 +151,8 @@ bool SigCompDecompressorDisp::getNextMessage(lpDecompressionResult lpResult)
 INLINE bool SigCompDecompressorDisp::internalDecompress(LPCVOID input_ptr, const size_t &input_size, lpDecompressionResult *lpResult)
 {
 	SigCompMessage sigCompMessage(input_ptr, input_size, (*lpResult)->getIsStreamBased());
+	state_sha_t * nack_sha_out = (*lpResult)->get_nack_sha();
+	state_sha_set(nack_sha_out, NULL, SHA_INVALID);
 	if( !sigCompMessage.getIsOK() )
 	{
 		return false;
@@ -160,6 +162,8 @@ INLINE bool SigCompDecompressorDisp::internalDecompress(LPCVOID input_ptr, const
 		// Remote party send us a NACK --> handle it
 		const_cast<SigCompStateHandler*>(this->stateHandler)->handleNack( sigCompMessage.getNackInfo() );
 		(*lpResult)->setIsNack(true);
+		lpstruct_nack_info nack_sha = sigCompMessage.getNackInfo();
+		state_sha_set(nack_sha_out, nack_sha->sha1, SHA_VALID);
 		return false;
 	}
 
