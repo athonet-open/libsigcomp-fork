@@ -233,10 +233,6 @@ public:
 		{
 			return &this->nack_info;
 		}
-		INLINE void set_nack_sha(state_sha_t *decoded_nack_sha)
-		{
-			nack_sha = *decoded_nack_sha;
-		}
 private:
 	state_sha_t nack_sha;
 	uint64_t compartmentId;
