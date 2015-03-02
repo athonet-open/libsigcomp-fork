@@ -121,6 +121,9 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		::memmove(output_buffer.getBuffer(pointer), const_cast<SigCompBuffer*>(data->getGhostAckedState()->getStateIdentifier())->getBuffer(), 
 			PARTIAL_ID_LEN_VALUE);
 		pointer+=PARTIAL_ID_LEN_VALUE; *header |= PARTIAL_ID_LEN_CODE;
+		state_sha_set(used_state_sha,
+				const_cast<SigCompBuffer*>(data->getGhostAckedState()->getStateIdentifier())->getBuffer(),
+				SHA_VALID);
 	}
 	else
 	{
@@ -153,6 +156,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		*output_buffer.getBuffer(pointer++) = 0x00; // First dict byte	// FIXME
 		*output_buffer.getBuffer(pointer++) = DEFLATE_FIXME_DICT; // FIXME: also change ghost
 #endif
+		state_sha_set(used_state_sha, NULL, SHA_INVALID);
 	}
 
 	//***********************************************
