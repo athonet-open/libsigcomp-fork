@@ -27,7 +27,7 @@
 #include "SigCompState.h"
 #include "struct_req_feedback.h"
 #include "struct_sigcomp_parameters.h"
-
+#include "reliability_mgmt_ext.h"
 #include <list>
 
 __NS_DECLARATION_BEGIN__
@@ -78,6 +78,10 @@ public:
 			reset(true);
 		}
 
+		INLINE state_sha_t * get_nack_sha() {
+			return &nack_sha;
+		}
+		
 		void reset(bool destructor=false, bool resetOutput=true){
 			for(uint8_t i=0; i<statesToCreateIndex; i++){
 				SAFE_DELETE_PTR(statesToCreate[i]);
@@ -229,8 +233,12 @@ public:
 		{
 			return &this->nack_info;
 		}
-
+		INLINE void set_nack_sha(state_sha_t *decoded_nack_sha)
+		{
+			nack_sha = *decoded_nack_sha;
+		}
 private:
+	state_sha_t nack_sha;
 	uint64_t compartmentId;
 	SigCompState* statesToCreate[4];
 	uint8_t statesToCreateIndex;
