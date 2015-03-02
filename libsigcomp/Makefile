@@ -38,6 +38,7 @@ LIBOBJ+=$(SRCPATH)zutil.o
 LIBOBJ+=$(SRCPATH)alloc.o
 LIBOBJ+=$(SRCPATH)log.o
 LIBOBJ+=$(SRCPATH)init.o
+LIBOBJ+=$(SRCPATH)reliability_mgmt_ext.o
 
 GCCCOMPILE=gcc
 GPPCOMPILE=g++

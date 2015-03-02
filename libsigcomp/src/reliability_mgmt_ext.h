@@ -17,6 +17,7 @@
 #ifndef __RELIABILITY_MGMT_EXT_H__
 #define __RELIABILITY_MGMT_EXT_H__
 
+#include <stdint.h>
 #include "rfc3174_us-sha1.h"
 
 #ifdef __cplusplus
@@ -34,6 +35,8 @@ typedef struct {
 	/** @brief Specifies if the SHA is to be considered valid */
 	state_sha_valid_flag_t valid :1;
 }state_sha_t;
+
+void state_sha_set(state_sha_t *out, uint8_t * buffer, state_sha_valid_flag_t valid);
 
 #ifdef __cplusplus
 };
