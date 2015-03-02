@@ -30,7 +30,7 @@ typedef enum {
 	
 typedef struct {
 	/** @brief value of the SHA */
-	char value[SHA1HashSize];
+	uint8_t value[SHA1HashSize];
 	/** @brief Specifies if the SHA is to be considered valid */
 	state_sha_valid_flag_t valid :1;
 }state_sha_t;
