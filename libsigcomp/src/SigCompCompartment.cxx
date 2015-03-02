@@ -249,6 +249,12 @@ uint16_t SigCompCompartment::findState(const SigCompBuffer* partial_identifier, 
 	
 	this->lock();
 
+	log_log("SigCompCompartment::findState -\tlooking for state ");
+        uint8_t * id = const_cast<SigCompBuffer*>(partial_identifier)->getBuffer(0);
+        log_log("[%02X:%02X:%02X:%02X:%02X:%02X]",
+                        id[0],id[1],id[2],id[3],id[4],id[5]);
+        log_log("\n");
+
 	list<SigCompState* >::iterator it_states;
 	for ( it_states=this->local_states.begin(); it_states!=this->local_states.end(); it_states++ ){
 		if((*it_states)->getStateIdentifier()->startsWith(partial_identifier)){
@@ -269,7 +275,6 @@ void SigCompCompartment::addState(SigCompState* &lpState)
 {
 	this->lock();
 
-	lpState->makeValid();
 	logStateAccess("SigCompCompartment::addState", lpState);
 	this->local_states.push_back(lpState);
 	this->total_memory_left-= GET_STATE_SIZE(lpState);

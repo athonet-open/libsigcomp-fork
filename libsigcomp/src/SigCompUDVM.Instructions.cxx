@@ -1392,7 +1392,7 @@ bool SigCompUDVM::EXEC_INST__STATE_ACCESS(uint16_t partial_identifier_start, uin
 	uint16_t match_count = const_cast<SigCompStateHandler*>(this->stateHandler)->findState(&partial_id, &lpState);
 	/*Decompression failure occurs if no state item matching the partial state identifier can be found, if
 	more than one state item matches the partial identifier*/
-	if(!lpState || !match_count /* || match_count>1 */)
+	if(!lpState || !match_count || match_count>1 )
 	{
 		this->createNackInfo((match_count>1)?ID_NOT_UNIQUE:STATE_NOT_FOUND, &partial_id);
 		return false;
