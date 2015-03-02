@@ -59,6 +59,8 @@ bool SigCompCompressorDisp::compress(uint64_t compartmentId, LPCVOID input_ptr, 
 	// For each compartment id create/retrieve one compressor instance
 	SigCompCompartment* lpCompartment = this->stateHandler->getCompartment(compartmentId);
 	
+	state_sha_set(used_state_sha, NULL, SHA_INVALID);
+	
 	if(!lpCompartment)
 	{
 		return false;
@@ -115,6 +117,8 @@ bool SigCompCompressorDisp::compress(uint64_t compartmentId, LPCVOID input_ptr, 
 		::SHA1Input(&sha, (const uint8_t*)output_ptr, output_size);
 		::SHA1Result(&sha, nackId);
 		lpCompartment->addNack(nackId);
+		
+		state_sha_set(used_state_sha, nackId, SHA_VALID);
 	}
 
 	return ret;
