@@ -48,7 +48,7 @@ public:
 	//
 	//	Compression / Decompression
 	//
-	size_t compress(uint64_t compartmentId, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t output_size, bool stream);
+	size_t compress(uint64_t compartmentId, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t output_size, bool stream, state_sha_t *used_state_sha);
 	size_t decompress(LPCVOID input_ptr, size_t input_size, lpDecompressionResult lpResult);
 	size_t getNextMessage(lpDecompressionResult lpResult);
 

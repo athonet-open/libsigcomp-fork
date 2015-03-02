@@ -58,14 +58,14 @@ compress
 @returns
 */
 
-size_t SigCompManager::compress(uint64_t compartmentId, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t output_size, bool stream)
+size_t SigCompManager::compress(uint64_t compartmentId, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t output_size, bool stream, state_sha_t *used_state_sha)
 {
 	assert(input_size);
 	assert(output_size);
 
 	size_t ret_size = output_size;
 
-	if(this->dispatcher_compressor->compress(compartmentId, input_ptr, input_size, output_ptr, ret_size, stream))
+	if(this->dispatcher_compressor->compress(compartmentId, input_ptr, input_size, output_ptr, ret_size, stream, used_state_sha))
 	{
 		return ret_size;
 	}

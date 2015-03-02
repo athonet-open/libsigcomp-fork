@@ -40,6 +40,7 @@
 #endif
 
 #include "alloc.h"
+#include "reliability_mgmt_ext.h"
 
 #ifndef __cplusplus
 typedef void SigCompManager;
@@ -52,7 +53,7 @@ EXTERN_C void SigCompManager_addPresenceDictionary(SigCompManager*);
 EXTERN_C void SigCompManager_setDecompression_Memory_Size(SigCompManager*, uint32_t);
 EXTERN_C void SigCompManager_setState_Memory_Size(SigCompManager*, uint32_t);
 EXTERN_C void SigCompManager_setCycles_Per_Bit(SigCompManager* manager, uint8_t cpb);
-EXTERN_C size_t SigCompManager_compress(SigCompManager*, uint64_t compartmentId, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, BOOLEAN stream);
+EXTERN_C size_t SigCompManager_compress(SigCompManager*, uint64_t compartmentId, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, BOOLEAN stream, state_sha_t *used_state_sha);
 #ifdef __cplusplus
 EXTERN_C size_t SigCompManager_decompress(SigCompManager*, const void* input_ptr, size_t input_size, struct DecompressionResult* );
 #else

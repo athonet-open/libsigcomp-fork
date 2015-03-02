@@ -28,6 +28,7 @@
 
 #include "SigCompCompressor.h"
 #include "SigCompState.h"
+#include "reliability_mgmt_ext.h"
 
 
 __NS_DECLARATION_BEGIN__
@@ -38,7 +39,7 @@ public:
 	DeflateCompressor();
 	~DeflateCompressor();
 
-	virtual bool compress(SigCompCompartment* lpCompartment, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t &output_size, bool stream);
+	virtual bool compress(SigCompCompartment* lpCompartment, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t &output_size, bool stream, state_sha_t *used_state_sha);
 };
 
 __NS_DECLARATION_END__

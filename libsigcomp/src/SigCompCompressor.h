@@ -27,7 +27,7 @@
 #include "MYTYPES.h"
 #include "SigCompCompartment.h"
 #include "SafeObject.h"
-
+#include "reliability_mgmt_ext.h"
 #include <map>
 
 __NS_DECLARATION_BEGIN__
@@ -38,7 +38,7 @@ public:
 	SigCompCompressor();
 	~SigCompCompressor();
 
-	virtual bool compress(SigCompCompartment* lpCompartment, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t &output_size, bool stream) = 0; 
+	virtual bool compress(SigCompCompartment* lpCompartment, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t &output_size, bool stream, state_sha_t *used_state_sha) = 0; 
 
 private:
 	
