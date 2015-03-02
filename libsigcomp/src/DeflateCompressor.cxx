@@ -21,6 +21,7 @@
 #include "DeflateCompressor.h"
 #include "DeflateData.h"
 #include "SigCompState.h"
+#include "log.h"
 
 //#include <math.h>
 #define LIBSIGCOMP_MIN(a, b) (a<b?a:b)
@@ -57,6 +58,8 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 
 	size_t pointer =0, state_len_index =0;
 
+	log_log("DeflateCompressor::compress - \t######### SENDING ##########\n");
+        log_log("DeflateCompressor::compress - \tcompressing message using compartment %llu\n", lpCompartment->getIdentifier());
 	// Compression Data
 	if(!lpCompartment->getCompressionData())
 		lpCompartment->setCompressionData(new DeflateData(stream));
@@ -187,6 +190,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		data->updateGhost((const uint8_t*)input_ptr, input_size);
 	}
 
+	log_log("DeflateCompressor::compress - \t######### END ##########\n");
 	//output_buffer.print(2000);
 	this->unlock();
 	return result;

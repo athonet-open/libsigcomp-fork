@@ -22,6 +22,7 @@
 #include "global_config.h"
 #include "SigCompCompressorDisp.h"
 #include "alloc.h"
+#include "log.h"
 
 #define NACK_SUPPORTED (this->stateHandler->getSigCompParameters()->getSigCompVersion() >= 0x02)
 

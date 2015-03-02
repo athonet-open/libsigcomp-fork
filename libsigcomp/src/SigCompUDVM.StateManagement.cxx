@@ -22,6 +22,7 @@
 #include "global_config.h"
 
 #include "SigCompUDVM.h"
+#include "log.h"
 
 __NS_DECLARATION_BEGIN__
 
@@ -65,6 +66,14 @@ bool SigCompUDVM::createTempState(uint16_t state_length, uint16_t state_address,
 	(however decompression failure does not occur and the state creation
 	requests made by the STATE-CREATE instruction are still valid).*/
 	bool is_ok = ( (6<=minimum_access_length && minimum_access_length<=20) && state_retention_priority!=65535 );
+
+	log_log("SigCompUDVM::createTempState -\tcreate temp state with ");
+        log_log("state_length %u, state_address %u, state_instruction %u, minimum_access_length %u, priority %u\n",
+                        state_length,
+                        state_address,
+                        state_instruction,
+                        minimum_access_length,
+                        state_retention_priority);
 
 	// if not ok and not END_MESSAGE --> decompression failure MUST occurs
 	if(!is_ok)
