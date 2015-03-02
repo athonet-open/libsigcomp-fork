@@ -77,6 +77,7 @@ EXTERN_C BOOLEAN DecompressionResult_getIsNack(DecompressionResult* );
 EXTERN_C uint8_t* DecompressionResult_getNackInfo(DecompressionResult*);
 EXTERN_C size_t DecompressionResult_getNackInfoSize(DecompressionResult*);
 EXTERN_C void DecompressionResult_delete(DecompressionResult**);
+EXTERN_C state_sha_t * DecompressionResult_check_NACK_SHA(DecompressionResult* result);
 
 //#undef BOOLEAN
 #undef EXTERN_C

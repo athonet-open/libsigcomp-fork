@@ -196,3 +196,8 @@ void DecompressionResult_delete(DecompressionResult** result)
 {
 	SAFE_DELETE_PTR(*(sigcomp::DecompressionResult**)result);
 }
+
+state_sha_t * DecompressionResult_check_NACK_SHA(sigcomp::DecompressionResult * result)
+{
+	return result->get_nack_sha();
+}
