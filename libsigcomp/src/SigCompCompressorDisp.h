@@ -31,6 +31,7 @@
 
 #include "DeflateCompressor.h"
 #include "DummyCompressor.h"
+#include "reliability_mgmt_ext.h"
 
 class SigCompManager;
 
@@ -44,7 +45,7 @@ public:
 	SigCompCompressorDisp(const SigCompStateHandler* stateHadler);
 	~SigCompCompressorDisp();
 
-	bool compress(uint64_t compartmentId, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t &output_size, bool stream);
+	bool compress(uint64_t compartmentId, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t &output_size, bool stream, state_sha_t *used_state_sha);
 
 	void addCompressor(SigCompCompressor* compressor);
 

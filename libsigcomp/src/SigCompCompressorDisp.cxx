@@ -52,12 +52,14 @@ SigCompCompressorDisp::~SigCompCompressorDisp()
 
 /**
 */
-bool SigCompCompressorDisp::compress(uint64_t compartmentId, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t &output_size, bool stream)
+bool SigCompCompressorDisp::compress(uint64_t compartmentId, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t &output_size, bool stream, state_sha_t *used_state_sha)
 {
 	bool ret = true;
 
 	// For each compartment id create/retrieve one compressor instance
 	SigCompCompartment* lpCompartment = this->stateHandler->getCompartment(compartmentId);
+	
+	state_sha_set(used_state_sha, NULL, SHA_INVALID);
 	
 	if(!lpCompartment)
 	{
@@ -69,7 +71,7 @@ bool SigCompCompressorDisp::compress(uint64_t compartmentId, LPCVOID input_ptr, 
 	std::list<SigCompCompressor*>::iterator it_compressor;
 	for( it_compressor=this->compressors.begin(); it_compressor!=this->compressors.end(); it_compressor++  )
 	{
-		ret = (*it_compressor)->compress(lpCompartment, input_ptr, input_size, output_ptr, output_size, stream);
+		ret = (*it_compressor)->compress(lpCompartment, input_ptr, input_size, output_ptr, output_size, stream, used_state_sha);
 		if(ret) break;
 	}
 	this->unlock();
@@ -115,6 +117,8 @@ bool SigCompCompressorDisp::compress(uint64_t compartmentId, LPCVOID input_ptr, 
 		::SHA1Input(&sha, (const uint8_t*)output_ptr, output_size);
 		::SHA1Result(&sha, nackId);
 		lpCompartment->addNack(nackId);
+		
+		state_sha_set(used_state_sha, nackId, SHA_VALID);
 	}
 
 	return ret;

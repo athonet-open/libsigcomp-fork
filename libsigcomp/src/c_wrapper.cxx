@@ -79,9 +79,9 @@ void SigCompManager_setCycles_Per_Bit(SigCompManager* manager, uint8_t cpb)
 /**
 	size_t SigCompManager::SigCompManager::compress(uint64_t compartmentId, LPCVOID input_ptr, size_t input_size, LPVOID output_ptr, size_t output_size, bool stream)
 */
-size_t SigCompManager_compress(SigCompManager* manager, uint64_t compartmentId, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, BOOLEAN stream)
+size_t SigCompManager_compress(SigCompManager* manager, uint64_t compartmentId, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, BOOLEAN stream, state_sha_t *used_state_sha)
 {
-	return GET_MANAGER(manager)->compress(compartmentId, input_ptr, input_size, output_ptr, output_size, stream);
+	return GET_MANAGER(manager)->compress(compartmentId, input_ptr, input_size, output_ptr, output_size, stream, used_state_sha);
 }
 
 /**
@@ -195,4 +195,9 @@ size_t DecompressionResult_getNackInfoSize(DecompressionResult* result)
 void DecompressionResult_delete(DecompressionResult** result)
 {
 	SAFE_DELETE_PTR(*(sigcomp::DecompressionResult**)result);
+}
+
+state_sha_t * DecompressionResult_check_NACK_SHA(DecompressionResult * result)
+{
+	return ((sigcomp::DecompressionResult*)result)->get_nack_sha();
 }
