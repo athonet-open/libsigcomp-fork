@@ -49,7 +49,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	
 	this->lock();
 
-	bool result = true, stateChanged, ackedState, zret;
+	bool result = true, stateChanged, stateful, zret;
 	uint8_t* header;
 	size_t compressedDataLen;
 	DeflateData* data = NULL;
@@ -71,12 +71,12 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	// State memory size code
 	uint8_t smsCode = LIBSIGCOMP_MIN(lpCompartment->getRemoteParameters()->getSmsCode(), lpCompartment->getRemoteParameters()->getDmsCode());
 #if USE_ONLY_ACKED_STATES
-	ackedState = (data->getGhostAckedState() && data->isStateful());
+	stateful = (data->getGhostAckedState() && data->isStateful());
 #else
-	ackedState = (data->getGhostState() != NULL);
+	stateful = (data->getGhostState() != NULL);
 #endif
 
-	log_log("DeflateCompressor::compress - \tackedState=%i\n", ackedState);
+	log_log("DeflateCompressor::compress - \tstateful=%i\n", stateful);
 	//
 	//	Init zLIB
 	//
@@ -188,7 +188,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		log_log("DeflateCompressor::compress - \tcreate GhostState\n");
 		data->createGhost(state_len, lpCompartment->getLocalParameters());
 	}
-	if (data->getGhostAckedState() && !ackedState) {
+	if (data->getGhostAckedState() && !stateful) {
 		uint16_t state_len = ( (1<<(data->zGetWindowBits())) + DEFLATE_UDVM_CIRCULAR_START_INDEX - 64 );
 		log_log("DeflateCompressor::compress - \tdelete GhostState\n");
 		data->freeGhostState();
