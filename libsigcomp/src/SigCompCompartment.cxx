@@ -307,10 +307,12 @@ void SigCompCompartment::freeGhostAckedState()
 	this->lock();
 	if(this->compressorData)
 	{
-		log_log("SigCompCompartment::freeGhostAckedState - \t");
-		this->compressorData->getGhostAckedState()->printStateId();
-		log_log("\n");
-		this->compressorData->freeGhostAckedState();
+		if(this->compressorData->getGhostAckedState()) {
+			log_log("SigCompCompartment::freeGhostAckedState - \t");
+			this->compressorData->getGhostAckedState()->printStateId();
+			log_log("\n");
+			this->compressorData->freeGhostAckedState();
+		}
 	}
 	this->unlock();
 }
