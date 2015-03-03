@@ -114,7 +114,7 @@
 //
 //	Feedbacks
 //
-#define USE_ONLY_ACKED_STATES	1
+#define USE_ONLY_ACKED_STATES	0
 
 //
 //	SAFE DELETE

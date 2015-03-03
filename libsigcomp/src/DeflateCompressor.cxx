@@ -26,6 +26,12 @@
 //#include <math.h>
 #define LIBSIGCOMP_MIN(a, b) (a<b?a:b)
 
+#if USE_ONLY_ACKED_STATES
+#define GET_STATE_TO_COMPRESS_WITH(x) ((x)->getGhostAckedState())
+#else
+#define GET_STATE_TO_COMPRESS_WITH(x) ((x)->getGhostState())
+#endif
+
 __NS_DECLARATION_BEGIN__
 
 /**
@@ -71,9 +77,9 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	// State memory size code
 	uint8_t smsCode = LIBSIGCOMP_MIN(lpCompartment->getRemoteParameters()->getSmsCode(), lpCompartment->getRemoteParameters()->getDmsCode());
 #if USE_ONLY_ACKED_STATES
-	stateful = (data->getGhostAckedState() && data->isStateful());
+	stateful = (GET_STATE_TO_COMPRESS_WITH(data) && data->isStateful());
 #else
-	stateful = (data->getGhostState() != NULL);
+	stateful = (GET_STATE_TO_COMPRESS_WITH(data) != NULL);
 #endif
 
 	log_log("DeflateCompressor::compress - \tstateful=%i\n", stateful);
@@ -116,9 +122,9 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	//
 	// Stateless or stateful?
 	//
-	if(data->getGhostAckedState())
+	if(GET_STATE_TO_COMPRESS_WITH(data))
 	{
-		::memmove(output_buffer.getBuffer(pointer), const_cast<SigCompBuffer*>(data->getGhostAckedState()->getStateIdentifier())->getBuffer(), 
+		::memmove(output_buffer.getBuffer(pointer), const_cast<SigCompBuffer*>(GET_STATE_TO_COMPRESS_WITH(data)->getStateIdentifier())->getBuffer(), 
 			PARTIAL_ID_LEN_VALUE);
 		pointer+=PARTIAL_ID_LEN_VALUE; *header |= PARTIAL_ID_LEN_CODE;
 	}
@@ -169,7 +175,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 	//
 	// Update state length
 	//
-	if(!data->getGhostAckedState() || !data->getGhostState())
+	if(!(GET_STATE_TO_COMPRESS_WITH(data)) || !data->getGhostState())
 	{		
 		uint16_t state_len = ( (1<<(data->zGetWindowBits())) + DEFLATE_UDVM_CIRCULAR_START_INDEX - 64 );
 		uint32_t hash_len = (state_len+8);
@@ -188,7 +194,7 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		log_log("DeflateCompressor::compress - \tcreate GhostState\n");
 		data->createGhost(state_len, lpCompartment->getLocalParameters());
 	}
-	if (data->getGhostAckedState() && !stateful) {
+	if (GET_STATE_TO_COMPRESS_WITH(data) && !stateful) {
 		uint16_t state_len = ( (1<<(data->zGetWindowBits())) + DEFLATE_UDVM_CIRCULAR_START_INDEX - 64 );
 		log_log("DeflateCompressor::compress - \tdelete GhostState\n");
 		data->freeGhostState();
