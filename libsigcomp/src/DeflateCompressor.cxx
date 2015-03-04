@@ -194,6 +194,8 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		log_log("DeflateCompressor::compress - \tcreate GhostState\n");
 		data->createGhost(state_len, lpCompartment->getLocalParameters());
 	}
+
+#ifdef USE_ONLY_ACKED_STATES
 	if (GET_STATE_TO_COMPRESS_WITH(data) && !stateful) {
 		uint16_t state_len = ( (1<<(data->zGetWindowBits())) + DEFLATE_UDVM_CIRCULAR_START_INDEX - 64 );
 		log_log("DeflateCompressor::compress - \tdelete GhostState\n");
@@ -201,7 +203,8 @@ bool DeflateCompressor::compress(SigCompCompartment* lpCompartment, LPCVOID inpu
 		log_log("DeflateCompressor::compress - \tcreate GhostState\n");
 		data->createGhost(state_len, lpCompartment->getLocalParameters());
 	}
-	
+#endif
+
 	log_log("DeflateCompressor::compress - \tupdate GhostState\n");
 	data->updateGhost((const uint8_t*)input_ptr, input_size);
 	log_log("DeflateCompressor::compress - \tset stateless\n");
